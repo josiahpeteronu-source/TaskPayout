@@ -21,6 +21,8 @@
   --danger: #d93636;
 }
 
+/* BODY */
+
 body {
   background: var(--background);
   color: var(--text);
@@ -298,5 +300,4 @@ footer {
   button {
     width: 100%;
   }
-  }
-  
+}
