@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,6 +38,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     header h2 {
@@ -108,14 +110,14 @@
 
 <nav>
   <a href="index.html">Home</a>
-  <a href="Signup.html">Sign Up</a>
-  <a href="Login.html">Login</a>
-  <a href="dashboard.html">Dashboard</a>
+  <a href="signup.html">Sign Up</a>
+  <a href="login.html">Login</a>
+  <a href="login.html">Dashboard</a>
 </nav>
 
 <header>
   <h2>TaskPayout</h2>
-  <a href="Login.html">Logout</a>
+  <a href="login.html">Logout</a>
 </header>
 
 <div class="container">
@@ -132,31 +134,31 @@
   </div>
 
   <div class="card">
-    <h3>Submit Your Email</h3>
+    <h3>Submit Your Listing</h3>
 
     <form id="taskForm">
 
-      <label>Email</label>
+      <label>Listing Title</label>
+      <input type="text"
+        placeholder="Enter listing title"
+        required>
+
+      <label>Account Provider</label>
       <input type="text"
         placeholder="Enter permitted provider"
         required>
 
-      <label>password</label>
-      <input type="text"
-        placeholder="Describe your listing"
-        required>
-
-      <label>Description</label>
+      <label>Description (Optional)</label>
       <textarea
-  placeholder="Recovery email(Optional)"></textarea>
+        placeholder="Describe your listing"></textarea>
 
       <button type="submit">Submit Listing</button>
 
     </form>
 
     <p style="font-size:12px;color:#777;margin-top:12px;">
+      Only list digital accounts whose providers explicitly permit transfer.
       Never submit passwords, recovery details or private login credentials.
-      Only list accounts whose provider permits transfer.
     </p>
   </div>
 
