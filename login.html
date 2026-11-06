@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Email Earn</title>
+  <title>Login - TaskPayout</title>
 
   <style>
     * {
@@ -15,11 +14,23 @@
     body {
       margin: 0;
       background: #f4f5ff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       min-height: 100vh;
       padding: 20px;
+    }
+
+    nav {
+      background: white;
+      padding: 15px;
+      text-align: center;
+      border-radius: 8px;
+      margin-bottom: 25px;
+    }
+
+    nav a {
+      color: #5545e8;
+      text-decoration: none;
+      margin: 8px;
+      font-weight: bold;
     }
 
     .container {
@@ -28,6 +39,7 @@
       border-radius: 15px;
       width: 100%;
       max-width: 400px;
+      margin: auto;
       box-shadow: 0 4px 15px #00000015;
     }
 
@@ -36,15 +48,10 @@
       color: #171d50;
     }
 
-    p {
-      text-align: center;
-      color: #666;
-    }
-
     input {
       width: 100%;
       padding: 14px;
-      margin: 12px 0;
+      margin: 10px 0;
       border: 1px solid #ddd;
       border-radius: 8px;
       font-size: 15px;
@@ -62,40 +69,48 @@
       margin-top: 15px;
     }
 
-    button:hover {
-      background: #3025b5;
-    }
-
-    a {
-      color: #5545e8;
-      text-decoration: none;
-    }
-
     .signup {
       text-align: center;
       margin-top: 20px;
+    }
+
+    .signup a {
+      color: #5545e8;
+      text-decoration: none;
     }
   </style>
 </head>
 
 <body>
 
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="Signup.html">Sign Up</a>
+    <a href="Login.html">Login</a>
+  </nav>
+
   <div class="container">
 
-    <h1>Welcome Back!</h1>
-    <p>Login to your Email Earn account</p>
+    <h1>Welcome Back</h1>
+    <p style="text-align:center; color:#666;">
+      Login to your TaskPayout account
+    </p>
 
     <form id="loginForm">
 
       <input
         type="email"
+        name="email"
         placeholder="Email Address"
+        autocomplete="email"
         required
       >
 
       <input
         type="password"
+        name="password"
         placeholder="Password"
+        autocomplete="current-password"
         required
       >
 
@@ -105,12 +120,8 @@
 
     <div class="signup">
       Don't have an account?
-      <a href="signup.html">Create Account</a>
+      <a href="Signup.html">Sign Up</a>
     </div>
-
-    <p style="font-size:12px;">
-      Keep your account password private.
-    </p>
 
   </div>
 
@@ -118,7 +129,8 @@
     document.getElementById("loginForm")
       .addEventListener("submit", function(event) {
         event.preventDefault();
-        alert("Login will work after we connect the secure account system.");
+
+        alert("Login will work when the secure account system is connected.");
       });
   </script>
 
