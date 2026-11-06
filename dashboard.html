@@ -5,112 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - TaskPayout</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      background: #f4f5ff;
-      color: #222;
-    }
-
-    nav {
-      background: white;
-      padding: 16px;
-      text-align: center;
-    }
-
-    nav a {
-      color: #5545e8;
-      text-decoration: none;
-      margin: 8px;
-      font-weight: bold;
-    }
-
-    header {
-      background: #171d50;
-      color: white;
-      padding: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    header h2 {
-      margin: 0;
-    }
-
-    header a {
-      color: white;
-      text-decoration: none;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: 25px auto;
-      padding: 15px;
-    }
-
-    .card {
-      background: white;
-      padding: 22px;
-      margin-bottom: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px #00000012;
-    }
-
-    .balance {
-      background: #5545e8;
-      color: white;
-      text-align: center;
-    }
-
-    .balance h1 {
-      font-size: 32px;
-    }
-
-    h3 {
-      color: #171d50;
-    }
-
-    input, textarea, select {
-      width: 100%;
-      padding: 14px;
-      margin: 9px 0 16px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 15px;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      background: #5545e8;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .history {
-      padding: 12px 0;
-      border-bottom: 1px solid #eee;
-      color: #666;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<nav>
+<nav class="navbar">
   <a href="index.html">Home</a>
-  <a href="signup.html">Sign Up</a>
   <a href="login.html">Login</a>
   <a href="login.html">Dashboard</a>
 </nav>
@@ -156,7 +57,7 @@
 
     </form>
 
-    <p style="font-size:12px;color:#777;margin-top:12px;">
+    <p style="font-size:12px; margin-top:12px;">
       Only list digital accounts whose providers explicitly permit transfer.
       Never submit passwords, recovery details or private login credentials.
     </p>
@@ -201,7 +102,7 @@
 
 </div>
 
-<footer style="text-align:center;padding:20px;color:#777;">
+<footer>
   © 2026 TaskPayout. All rights reserved.
 </footer>
 
