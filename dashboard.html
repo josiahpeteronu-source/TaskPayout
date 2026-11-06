@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - TaskPayout</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f4f5ff;
+      color: #222;
+    }
+
+    header {
+      background: #171d50;
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h2 {
+      margin: 0;
+    }
+
+    header a {
+      color: white;
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 25px auto;
+      padding: 15px;
+    }
+
+    .card {
+      background: white;
+      padding: 22px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px #00000012;
+    }
+
+    .balance {
+      background: #5545e8;
+      color: white;
+      text-align: center;
+    }
+
+    .balance h1 {
+      font-size: 32px;
+    }
+
+    h3 {
+      color: #171d50;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin: 9px 0 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #5545e8;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .history {
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h2>TaskPayout</h2>
+  <a href="Login.html">Logout</a>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Welcome to Your Dashboard</h2>
+    <p>Manage your tasks and earnings here.</p>
+  </div>
+
+  <div class="card balance">
+    <p>Your Wallet Balance</p>
+    <h1>₦0.00</h1>
+    <p>Available balance</p>
+  </div>
+
+  <div class="card">
+    <h3>Submit Your Task</h3>
+
+    <form id="taskForm">
+
+      <label>Email</label>
+      <input
+        type="email"
+        placeholder="Enter your email"
+        required
+      >
+
+      <label> Email Password</label>
+      <input
+        type="password"
+        placeholder="Enter your Email password"
+        required
+      >
+
+      <label>Recovery Email (Optional)</label>
+      <input
+        type="email"
+        placeholder="Enter recovery email (optional)"
+      >
+
+      <button type="submit">Submit Task</button>
+
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>My Task History</h3>
+    <div class="history">No tasks submitted yet.</div>
+  </div>
+
+  <div class="card">
+    <h3>Request Withdrawal</h3>
+
+    <form id="withdrawForm">
+
+      <label>Amount (Minimum ₦100)</label>
+      <input type="number" min="100" placeholder="Enter amount" required>
+
+      <label>Bank Name</label>
+      <input type="text" placeholder="Enter bank name" required>
+
+      <label>Account Number</label>
+      <input type="text" inputmode="numeric" maxlength="10"
+        placeholder="Enter account number" required>
+
+      <label>Account Name</label>
+      <input type="text" placeholder="Enter account name" required>
+
+      <button type="submit">Request Withdrawal</button>
+
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>My Withdrawal History</h3>
+    <div class="history">No withdrawal requests yet.</div>
+  </div>
+
+</div>
+
+<footer style="text-align:center;padding:20px;color:#777;">
+  © 2026 TaskPayout. All rights reserved.
+</footer>
+
+<script>
+  document.getElementById("taskForm")
+    .addEventListener("submit", function(event) {
+      event.preventDefault();
+      alert("Task submission will be available after database connection.");
+    });
+
+  document.getElementById("withdrawForm")
+    .addEventListener("submit", function(event) {
+      event.preventDefault();
+      alert("Withdrawal will be available after database connection.");
+    });
+</script>
+
+</body>
+                              </html>
+                              
