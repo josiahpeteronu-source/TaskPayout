@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - TaskPayout</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f4f5ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 15px #00000015;
+    }
+
+    h1 {
+      text-align: center;
+      color: #171d50;
+    }
+
+    p {
+      text-align: center;
+      color: #666;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #5545e8;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    button:hover {
+      background: #3025b5;
+    }
+
+    .login {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    a {
+      color: #5545e8;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>Create Account</h1>
+    <p>Join TaskPayout today!</p>
+
+    <form id="signupForm">
+
+      <input
+        type="text"
+        name="fullname"
+        placeholder="Full Name"
+        autocomplete="name"
+        required
+      >
+
+      <input
+        type="text"
+        name="username"
+        placeholder="Choose a Username"
+        autocomplete="username"
+        minlength="3"
+        required
+      >
+
+      <input
+        type="email"
+        name="email"
+        placeholder="Email Address"
+        autocomplete="email"
+        required
+      >
+
+      <input
+        type="password"
+        name="password"
+        placeholder="Create Password"
+        minlength="8"
+        autocomplete="new-password"
+        required
+      >
+
+      <input
+        type="password"
+        name="confirmPassword"
+        placeholder="Confirm Password"
+        minlength="8"
+        autocomplete="new-password"
+        required
+      >
+
+      <button type="submit">Sign Up</button>
+
+    </form>
+
+    <div class="login">
+      Already have an account?
+      <a href="login.html">Login</a>
+    </div>
+
+    <p style="font-size:12px;">
+      Never share your email account password with anyone.
+    </p>
+
+  </div>
+
+  <script>
+    document.getElementById("signupForm")
+      .addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const password = this.elements.password.value;
+        const confirmPassword = this.elements.confirmPassword.value;
+
+        if (password !== confirmPassword) {
+          alert("Passwords do not match!");
+          return;
+        }
+
+        alert("Registration will be available when the secure account system is connected.");
+      });
+  </script>
+
+</body>
+</html>
