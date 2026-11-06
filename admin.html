@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,14 +17,36 @@
       color: #222;
     }
 
+    nav {
+      background: white;
+      padding: 15px;
+      text-align: center;
+    }
+
+    nav a {
+      color: #5545e8;
+      text-decoration: none;
+      margin: 8px;
+      font-weight: bold;
+    }
+
     header {
       background: #171d50;
       color: white;
       padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
     header h2 {
       margin: 0;
+    }
+
+    header a {
+      color: white;
+      text-decoration: none;
     }
 
     .container {
@@ -64,10 +85,10 @@
       margin: 8px 0;
     }
 
-    input {
+    input, textarea {
       width: 100%;
       padding: 12px;
-      margin: 8px 0;
+      margin: 8px 0 15px;
       border: 1px solid #ddd;
       border-radius: 8px;
     }
@@ -112,9 +133,19 @@
 
 <body>
 
+<nav>
+  <a href="index.html">Home</a>
+  <a href="dashboard.html">User Dashboard</a>
+  <a href="admin.html">Admin Panel</a>
+</nav>
+
 <header>
-  <h2>TaskPayout Admin</h2>
-  <p>Administrator Dashboard</p>
+  <div>
+    <h2>TaskPayout Admin</h2>
+    <p>Administrator Dashboard</p>
+  </div>
+
+  <a href="Login.html">Logout</a>
 </header>
 
 <div class="container">
@@ -129,7 +160,7 @@
       </div>
 
       <div class="stat">
-        <p>Pending Tasks</p>
+        <p>Pending Listings</p>
         <h2>0</h2>
       </div>
 
@@ -151,40 +182,48 @@
   </div>
 
   <div class="card">
-    <h3>Pending Task Submissions</h3>
+    <h3>Pending Submissions</h3>
 
     <div class="record">
-      <p>No pending tasks yet.</p>
+      <p>No pending submissions yet.</p>
       <p class="note">
-        User submissions will appear here after the database is connected.
+        User listings will appear here after the database is connected.
       </p>
     </div>
   </div>
 
   <div class="card">
-    <h3>Review Task</h3>
+    <h3>Review Submission</h3>
 
-    <label>Task Submission ID</label>
-    <input type="text" placeholder="Enter task ID">
+    <label>Submission ID</label>
+    <input type="text" placeholder="Enter submission ID">
 
-    <label>Reward Amount (₦100 - ₦500)</label>
-    <input type="number" min="100" max="500"
+    <label>Reward Amount (₦)</label>
+    <input type="number" min="0"
       placeholder="Enter reward amount">
 
+    <label>Rejection Reason (Optional)</label>
+    <textarea placeholder="Enter rejection reason"></textarea>
+
     <button class="approve" type="button"
-      onclick="alert('Task review will work after database connection.')">
-      Accept Task
+      onclick="alert('Approval will work after database connection.')">
+      Accept Submission
     </button>
 
     <button class="reject" type="button"
-      onclick="alert('Task review will work after database connection.')">
-      Decline Task
+      onclick="alert('Rejection will work after database connection.')">
+      Decline Submission
     </button>
+  </div>
 
-    <button type="button"
-      onclick="alert('Wallet crediting will work after database connection.')">
-      Credit User Wallet
-    </button>
+  <div class="card">
+    <h3>Approved Submissions</h3>
+    <p>No approved submissions yet.</p>
+  </div>
+
+  <div class="card">
+    <h3>Rejected Submissions</h3>
+    <p>No rejected submissions yet.</p>
   </div>
 
   <div class="card">
@@ -215,6 +254,10 @@
   </div>
 
 </div>
+
+<footer style="text-align:center;padding:20px;color:#777;">
+  © 2026 TaskPayout. All rights reserved.
+</footer>
 
 </body>
 </html>
