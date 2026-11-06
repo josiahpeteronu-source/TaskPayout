@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - TaskPayout</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f4f5ff;
+      color: #222;
+    }
+
+    header {
+      background: #171d50;
+      color: white;
+      padding: 20px;
+    }
+
+    header h2 {
+      margin: 0;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: auto;
+      padding: 15px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      margin: 18px 0;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px #00000012;
+    }
+
+    h3 {
+      color: #171d50;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .stat {
+      background: #5545e8;
+      color: white;
+      padding: 18px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .stat h2 {
+      margin: 8px 0;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    button {
+      padding: 12px;
+      border: none;
+      border-radius: 7px;
+      color: white;
+      background: #5545e8;
+      cursor: pointer;
+      margin: 5px 0;
+    }
+
+    .reject {
+      background: #d93636;
+    }
+
+    .approve {
+      background: #168447;
+    }
+
+    .record {
+      border: 1px solid #eee;
+      padding: 15px;
+      border-radius: 9px;
+      margin: 12px 0;
+    }
+
+    .note {
+      color: #777;
+      font-size: 13px;
+    }
+
+    @media(max-width: 450px) {
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h2>TaskPayout Admin</h2>
+  <p>Administrator Dashboard</p>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h3>Dashboard Overview</h3>
+
+    <div class="stats">
+      <div class="stat">
+        <p>Total Users</p>
+        <h2>0</h2>
+      </div>
+
+      <div class="stat">
+        <p>Pending Tasks</p>
+        <h2>0</h2>
+      </div>
+
+      <div class="stat">
+        <p>Pending Withdrawals</p>
+        <h2>0</h2>
+      </div>
+
+      <div class="stat">
+        <p>Total Paid</p>
+        <h2>₦0</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Registered Users</h3>
+    <p>No registered users yet.</p>
+  </div>
+
+  <div class="card">
+    <h3>Pending Task Submissions</h3>
+
+    <div class="record">
+      <p>No pending tasks yet.</p>
+      <p class="note">
+        User submissions will appear here after the database is connected.
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Review Task</h3>
+
+    <label>Task Submission ID</label>
+    <input type="text" placeholder="Enter task ID">
+
+    <label>Reward Amount (₦100 - ₦500)</label>
+    <input type="number" min="100" max="500"
+      placeholder="Enter reward amount">
+
+    <button class="approve" type="button"
+      onclick="alert('Task review will work after database connection.')">
+      Accept Task
+    </button>
+
+    <button class="reject" type="button"
+      onclick="alert('Task review will work after database connection.')">
+      Decline Task
+    </button>
+
+    <button type="button"
+      onclick="alert('Wallet crediting will work after database connection.')">
+      Credit User Wallet
+    </button>
+  </div>
+
+  <div class="card">
+    <h3>Pending Withdrawal Requests</h3>
+    <p>No withdrawal requests yet.</p>
+  </div>
+
+  <div class="card">
+    <h3>Manage Withdrawal</h3>
+
+    <label>Withdrawal Request ID</label>
+    <input type="text" placeholder="Enter withdrawal ID">
+
+    <button class="approve" type="button"
+      onclick="alert('Withdrawal approval will work after database connection.')">
+      Approve Withdrawal
+    </button>
+
+    <button class="reject" type="button"
+      onclick="alert('Withdrawal rejection will work after database connection.')">
+      Decline Withdrawal
+    </button>
+
+    <button type="button"
+      onclick="alert('Payment confirmation will work after database connection.')">
+      Mark as Paid
+    </button>
+  </div>
+
+</div>
+
+</body>
+</html>
