@@ -4,120 +4,529 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - TaskPayout</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="theme-color" content="#171d50">
+
+  <title>My Dashboard - TaskPayout</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: #f5f6fc;
+      color: #171d50;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* SIDEBAR */
+
+    .sidebar {
+      width: 245px;
+      background: #171d50;
+      color: white;
+      padding: 30px 20px;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: 800;
+      margin-bottom: 45px;
+    }
+
+    .logo span {
+      color: #a99fff;
+    }
+
+    .sidebar p {
+      color: #aeb3d1;
+      font-size: 11px;
+      margin: 25px 10px 12px;
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #d8dbed;
+      padding: 14px;
+      margin: 7px 0;
+      border-radius: 9px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .sidebar a.active,
+    .sidebar a:hover {
+      background: #5545e8;
+      color: white;
+    }
+
+    /* MAIN CONTENT */
+
+    .main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .topbar {
+      background: white;
+      padding: 22px 35px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 3px 15px #00000008;
+    }
+
+    .topbar h2 {
+      font-size: 21px;
+    }
+
+    .profile {
+      background: #f0edff;
+      color: #5545e8;
+      padding: 10px 15px;
+      border-radius: 25px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .content {
+      padding: 30px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .welcome {
+      margin-bottom: 25px;
+    }
+
+    .welcome h2 {
+      font-size: 25px;
+      margin-bottom: 8px;
+    }
+
+    .welcome p {
+      color: #85889c;
+      font-size: 14px;
+    }
+
+    /* WALLET */
+
+    .wallet {
+      background: linear-gradient(120deg, #171d50, #5545e8);
+      color: white;
+      padding: 30px;
+      border-radius: 17px;
+      margin-bottom: 25px;
+      box-shadow: 0 10px 25px #5545e830;
+    }
+
+    .wallet small {
+      color: #d8d5ff;
+    }
+
+    .wallet h1 {
+      font-size: 36px;
+      margin: 12px 0;
+    }
+
+    .wallet p {
+      font-size: 13px;
+      color: #ddd9ff;
+    }
+
+    /* STATISTICS */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 22px;
+      border-radius: 13px;
+      border: 1px solid #eee;
+      box-shadow: 0 4px 15px #00000005;
+    }
+
+    .stat-card small {
+      color: #888;
+      font-size: 13px;
+    }
+
+    .stat-card h2 {
+      margin-top: 12px;
+      font-size: 25px;
+    }
+
+    /* FORMS AND PANELS */
+
+    .panel {
+      background: white;
+      padding: 25px;
+      border-radius: 14px;
+      margin-bottom: 25px;
+      border: 1px solid #eee;
+      box-shadow: 0 4px 18px #00000005;
+    }
+
+    .panel h3 {
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin: 15px 0 8px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #e1e2ec;
+      border-radius: 8px;
+      outline: none;
+      background: #fafaff;
+      font-size: 14px;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: #5545e8;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    button {
+      background: #5545e8;
+      color: white;
+      border: none;
+      padding: 14px 22px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 18px;
+    }
+
+    button:hover {
+      background: #3025b5;
+    }
+
+    .note {
+      background: #f5f3ff;
+      color: #666;
+      padding: 13px;
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 1.6;
+      margin-top: 15px;
+    }
+
+    .history {
+      padding: 25px;
+      background: #fafaff;
+      border: 1px dashed #d9d9e8;
+      border-radius: 10px;
+      text-align: center;
+      color: #888;
+      font-size: 13px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #888;
+      font-size: 12px;
+    }
+
+    /* MOBILE DESIGN */
+
+    @media(max-width: 750px) {
+      .layout {
+        display: block;
+      }
+
+      .sidebar {
+        width: 100%;
+        padding: 15px;
+      }
+
+      .logo {
+        margin-bottom: 12px;
+      }
+
+      .sidebar p {
+        display: none;
+      }
+
+      .sidebar a {
+        display: inline-block;
+        padding: 10px;
+        margin: 3px;
+        font-size: 12px;
+      }
+
+      .topbar {
+        padding: 17px;
+      }
+
+      .content {
+        padding: 18px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .wallet h1 {
+        font-size: 30px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<nav class="navbar">
-  <a href="index.html">Home</a>
-  <a href="login.html">Login</a>
-  <a href="login.html">Dashboard</a>
-</nav>
+<div class="layout">
 
-<header>
-  <h2>TaskPayout</h2>
-  <a href="login.html">Logout</a>
-</header>
+  <!-- SIDEBAR -->
 
-<div class="container">
+  <aside class="sidebar">
 
-  <div class="card">
-    <h2>Welcome to Your Dashboard</h2>
-    <p>Manage your listings and earnings here.</p>
-  </div>
+    <div class="logo">Task<span>Payout.</span></div>
 
-  <div class="card balance">
-    <p>Your Wallet Balance</p>
-    <h1>₦0.00</h1>
-    <p>Available balance</p>
-  </div>
+    <p>Main Menu</p>
 
-  <div class="card">
-    <h3>Submit Your Listing</h3>
+    <a href="dashboard.html" class="active">▦ Dashboard</a>
+    <a href="#listing">＋ Submit Listing</a>
+    <a href="#history">▤ My Listings</a>
+    <a href="#withdraw">↗ Withdrawals</a>
 
-    <form id="taskForm">
+    <p>Account</p>
 
-      <label>Listing Title</label>
-      <input type="text"
-        placeholder="Enter listing title"
-        required>
+    <a href="index.html">⌂ Visit Website</a>
+    <a href="login.html">↪ Logout</a>
 
-      <label>Account Provider</label>
-      <input type="text"
-        placeholder="Enter permitted provider"
-        required>
+  </aside>
 
-      <label>Description (Optional)</label>
-      <textarea
-        placeholder="Describe your listing"></textarea>
+  <!-- MAIN CONTENT -->
 
-      <button type="submit">Submit Listing</button>
+  <main class="main">
 
-    </form>
+    <div class="topbar">
+      <h2>My Dashboard</h2>
+      <div class="profile">My Account</div>
+    </div>
 
-    <p style="font-size:12px; margin-top:12px;">
-      Only list digital accounts whose providers explicitly permit transfer.
-      Never submit passwords, recovery details or private login credentials.
-    </p>
-  </div>
+    <div class="content">
 
-  <div class="card">
-    <h3>My Listing History</h3>
-    <div class="history">No listings submitted yet.</div>
-  </div>
+      <!-- WELCOME -->
 
-  <div class="card">
-    <h3>Request Withdrawal</h3>
+      <div class="welcome">
+        <h2>Welcome Back! 👋</h2>
+        <p>Here's an overview of your TaskPayout account.</p>
+      </div>
 
-    <form id="withdrawForm">
+      <!-- WALLET -->
 
-      <label>Amount (Minimum ₦100)</label>
-      <input type="number" min="100"
-        placeholder="Enter amount" required>
+      <div class="wallet">
+        <small>AVAILABLE WALLET BALANCE</small>
+        <h1>₦0.00</h1>
+        <p>Your available balance will appear here.</p>
+      </div>
 
-      <label>Bank Name</label>
-      <input type="text"
-        placeholder="Enter bank name" required>
+      <!-- STATISTICS -->
 
-      <label>Account Number</label>
-      <input type="text" inputmode="numeric"
-        maxlength="10"
-        placeholder="Enter account number" required>
+      <div class="stats">
 
-      <label>Account Name</label>
-      <input type="text"
-        placeholder="Enter account name" required>
+        <div class="stat-card">
+          <small>Total Listings</small>
+          <h2>0</h2>
+        </div>
 
-      <button type="submit">Request Withdrawal</button>
+        <div class="stat-card">
+          <small>Approved Listings</small>
+          <h2>0</h2>
+        </div>
 
-    </form>
-  </div>
+        <div class="stat-card">
+          <small>Pending Withdrawals</small>
+          <h2>0</h2>
+        </div>
 
-  <div class="card">
-    <h3>My Withdrawal History</h3>
-    <div class="history">No withdrawal requests yet.</div>
-  </div>
+      </div>
+
+      <!-- SUBMIT LISTING -->
+
+      <section class="panel" id="listing">
+
+        <h3>＋ Submit a New Email</h3>
+
+        <form id="taskForm">
+
+          <label>Email</label>
+
+          <input
+            type="text"
+            placeholder="Enter listing title"
+            required
+          >
+
+          <label>password </label>
+
+          <input
+            type="text"
+            placeholder="Enter Emaail password"
+            required
+          >
+
+          <label>Recovery Email(Optional)</label>
+
+          <textarea
+            placeholder="Enter Recovery (optional)"
+          ></textarea>
+
+        
+
+          <button type="submit">
+            Submit Email→
+          </button>
+
+        </form>
+
+      </section>
+
+      <!-- LISTING HISTORY -->
+
+      <section class="panel" id="history">
+
+        <h3>My Email History</h3>
+
+        <div class="history">
+          <p>No listings submitted yet.</p>
+        </div>
+
+      </section>
+
+      <!-- WITHDRAWAL -->
+
+      <section class="panel" id="withdraw">
+
+        <h3>↗ Request a Withdrawal</h3>
+
+        <form id="withdrawForm">
+
+          <label>Withdrawal Amount (Minimum ₦100)</label>
+
+          <input
+            type="number"
+            min="100"
+            placeholder="Enter amount"
+            required
+          >
+
+          <label>Bank Name</label>
+
+          <input
+            type="text"
+            placeholder="Enter bank name"
+            required
+          >
+
+          <label>Account Number</label>
+
+          <input
+            type="text"
+            inputmode="numeric"
+            maxlength="10"
+            pattern="[0-9]{10}"
+            placeholder="Enter 10-digit account number"
+            required
+          >
+
+          <label>Account Name</label>
+
+          <input
+            type="text"
+            placeholder="Enter account name"
+            required
+          >
+
+          <button type="submit">
+            Request Withdrawal →
+          </button>
+
+        </form>
+
+      </section>
+
+      <!-- WITHDRAWAL HISTORY -->
+
+      <section class="panel">
+
+        <h3>My Withdrawal History</h3>
+
+        <div class="history">
+          <p>No withdrawal requests yet.</p>
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- FOOTER -->
+
+    <footer>
+      © 2026 TaskPayout. All rights reserved.
+    </footer>
+
+  </main>
 
 </div>
 
-<footer>
-  © 2026 TaskPayout. All rights reserved.
-</footer>
+<!-- FORM PLACEHOLDERS -->
 
 <script>
+
   document.getElementById("taskForm")
     .addEventListener("submit", function(event) {
+
       event.preventDefault();
+
       alert("Listing submission will work after database connection.");
+
     });
 
   document.getElementById("withdrawForm")
     .addEventListener("submit", function(event) {
+
       event.preventDefault();
+
       alert("Withdrawal will work after database connection.");
+
     });
+
 </script>
 
 </body>
