@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,129 +5,362 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard - TaskPayout</title>
   <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      background: #f4f5ff;
+      font-family: Arial, sans-serif;
+    }
+
+    .admin-container {
+      max-width: 1100px;
+      margin: 25px auto;
+      padding: 15px;
+    }
+
+    .admin-card {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .admin-stat {
+      background: #f0efff;
+      padding: 18px;
+      border-radius: 10px;
+    }
+
+    .admin-stat h2 {
+      color: #5545e8;
+      margin-top: 8px;
+    }
+
+    .listing {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 15px;
+      overflow-wrap: anywhere;
+    }
+
+    .listing p {
+      margin: 8px 0;
+    }
+
+    .approve, .reject {
+      border: none;
+      padding: 11px 16px;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      margin: 8px 5px 0 0;
+    }
+
+    .approve {
+      background: #168b50;
+    }
+
+    .reject {
+      background: #d93636;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 20px;
+      background: #eee;
+      font-size: 13px;
+    }
+
+    #message {
+      padding: 12px;
+      margin: 15px 0;
+      border-radius: 8px;
+      background: #eee;
+      overflow-wrap: anywhere;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 
 <body>
 
 <nav class="navbar">
   <a href="index.html">Home</a>
-  <a href="login.html">User Login</a>
-  <a href="login.html">Admin Login</a>
+  <a href="dashboard.html">User Dashboard</a>
+  <button id="logoutBtn" type="button">Logout</button>
 </nav>
 
-<header>
-  <div>
-    <h2>TaskPayout Admin</h2>
-    <p>Administrator Dashboard</p>
-  </div>
-  <a href="login.html">Logout</a>
+<header style="padding:20px;">
+  <h2>TaskPayout Admin</h2>
+  <p>Administrator Dashboard</p>
+  <p id="adminEmail"></p>
 </header>
 
-<div class="container">
+<main class="admin-container">
 
-  <div class="card">
-    <h3>Dashboard Overview</h3>
-    <div class="stats">
-      <div class="stat">
-        <p>Total Users</p>
-        <h2>0</h2>
-      </div>
-      <div class="stat">
-        <p>Pending Listings</p>
-        <h2>0</h2>
-      </div>
-      <div class="stat">
-        <p>Pending Withdrawals</p>
-        <h2>0</h2>
-      </div>
-      <div class="stat">
-        <p>Total Paid</p>
-        <h2>₦0</h2>
+  <div id="message">Checking administrator access...</div>
+
+  <section id="adminContent" class="hidden">
+
+    <div class="admin-card">
+      <h3>Dashboard Overview</h3>
+
+      <div class="admin-stats">
+
+        <div class="admin-stat">
+          <p>Total Listings</p>
+          <h2 id="totalListings">0</h2>
+        </div>
+
+        <div class="admin-stat">
+          <p>Pending Listings</p>
+          <h2 id="pendingListings">0</h2>
+        </div>
+
+        <div class="admin-stat">
+          <p>Approved Listings</p>
+          <h2 id="approvedListings">0</h2>
+        </div>
+
+        <div class="admin-stat">
+          <p>Rejected Listings</p>
+          <h2 id="rejectedListings">0</h2>
+        </div>
+
       </div>
     </div>
-  </div>
 
-  <div class="card">
-    <h3>Registered Users</h3>
-    <p>No registered users yet.</p>
-  </div>
-
-  <div class="card">
-    <h3>Pending Submissions</h3>
-    <div class="record">
-      <p>No pending submissions yet.</p>
-      <p class="note">
-        User listings will appear here after the database is connected.
-      </p>
+    <div class="admin-card">
+      <h3>All User Submissions</h3>
+      <button type="button" id="refreshBtn">Refresh Listings</button>
+      <div id="listingsContainer">Loading listings...</div>
     </div>
-  </div>
 
-  <div class="card">
-    <h3>Review Submission</h3>
+  </section>
 
-    <label>Submission ID</label>
-    <input type="text" placeholder="Enter submission ID">
+</main>
 
-    <label>Reward Amount (₦)</label>
-    <input type="number" min="0" placeholder="Enter reward amount">
+<script>
+  const SUPABASE_URL =
+    "https://czimlirfmlsiybuqllsf.supabase.co";
 
-    <label>Rejection Reason (Optional)</label>
-    <textarea placeholder="Enter rejection reason"></textarea>
+  const SUPABASE_KEY =
+    "sb_publishable_2rDw4HNQME_r9IK1c7l1tg_1JOnxoBE";
 
-    <button class="approve" type="button"
-      onclick="alert('Approval will work after database connection.')">
-      Accept Submission
-    </button>
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 
-    <button class="reject" type="button"
-      onclick="alert('Rejection will work after database connection.')">
-      Decline Submission
-    </button>
-  </div>
+  const message = document.getElementById("message");
+  const adminContent = document.getElementById("adminContent");
+  const listingsContainer =
+    document.getElementById("listingsContainer");
 
-  <div class="card">
-    <h3>Approved Submissions</h3>
-    <p>No approved submissions yet.</p>
-  </div>
+  let currentUser = null;
 
-  <div class="card">
-    <h3>Rejected Submissions</h3>
-    <p>No rejected submissions yet.</p>
-  </div>
+  function showMessage(text) {
+    message.textContent = text;
+  }
 
-  <div class="card">
-    <h3>Pending Withdrawal Requests</h3>
-    <p>No withdrawal requests yet.</p>
-  </div>
+  async function checkAdmin() {
+    const { data, error } =
+      await supabaseClient.auth.getUser();
 
-  <div class="card">
-    <h3>Manage Withdrawal</h3>
+    if (error || !data.user) {
+      window.location.href = "login.html";
+      return;
+    }
 
-    <label>Withdrawal Request ID</label>
-    <input type="text" placeholder="Enter withdrawal ID">
+    currentUser = data.user;
 
-    <button class="approve" type="button"
-      onclick="alert('Withdrawal approval will work after database connection.')">
-      Approve Withdrawal
-    </button>
+    document.getElementById("adminEmail").textContent =
+      "Logged in as: " + currentUser.email;
 
-    <button class="reject" type="button"
-      onclick="alert('Withdrawal rejection will work after database connection.')">
-      Decline Withdrawal
-    </button>
+    const { data: adminRecord, error: adminError } =
+      await supabaseClient
+        .from("admin_users")
+        .select("user_id")
+        .eq("user_id", currentUser.id)
+        .maybeSingle();
 
-    <button type="button"
-      onclick="alert('Payment confirmation will work after database connection.')">
-      Mark as Paid
-    </button>
-  </div>
+    if (adminError) {
+      showMessage(
+        "Could not verify admin access: " + adminError.message
+      );
+      return;
+    }
 
-</div>
+    if (!adminRecord) {
+      showMessage(
+        "Access denied. Your account is not an administrator."
+      );
+      return;
+    }
 
-<footer style="text-align:center;padding:20px;color:#777;">
-  © 2026 TaskPayout. All rights reserved.
-</footer>
+    message.classList.add("hidden");
+    adminContent.classList.remove("hidden");
+
+    await loadListings();
+  }
+
+  async function loadListings() {
+    listingsContainer.textContent = "Loading listings...";
+
+    const { data, error } = await supabaseClient
+      .from("email_listings")
+      .select(
+        "id, user_id, email_address, email_provider, description, asking_price, status, created_at"
+      )
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      listingsContainer.textContent =
+        "Could not load listings: " + error.message;
+      return;
+    }
+
+    const listings = data || [];
+
+    document.getElementById("totalListings").textContent =
+      listings.length;
+
+    document.getElementById("pendingListings").textContent =
+      listings.filter(x => x.status === "pending").length;
+
+    document.getElementById("approvedListings").textContent =
+      listings.filter(x => x.status === "approved").length;
+
+    document.getElementById("rejectedListings").textContent =
+      listings.filter(x => x.status === "rejected").length;
+
+    listingsContainer.replaceChildren();
+
+    if (listings.length === 0) {
+      listingsContainer.textContent = "No listings submitted yet.";
+      return;
+    }
+
+    listings.forEach(listing => {
+      const card = document.createElement("div");
+      card.className = "listing";
+
+      const heading = document.createElement("h3");
+      heading.textContent = "Listing #" + listing.id;
+      card.appendChild(heading);
+
+      function addDetail(label, value) {
+        const p = document.createElement("p");
+        p.textContent = label + ": " +
+          (value === null || value === undefined || value === ""
+            ? "Not provided"
+            : value);
+        card.appendChild(p);
+      }
+
+      addDetail("Email address", listing.email_address);
+      addDetail("Provider", listing.email_provider);
+      addDetail("Description", listing.description);
+      addDetail(
+        "Asking price",
+        "₦" + Number(listing.asking_price).toLocaleString()
+      );
+      addDetail("User ID", listing.user_id);
+
+      const status = document.createElement("p");
+      status.className = "status";
+      status.textContent = "Status: " + listing.status;
+      card.appendChild(status);
+
+      if (listing.status === "pending") {
+        const approveBtn = document.createElement("button");
+        approveBtn.className = "approve";
+        approveBtn.textContent = "Approve";
+
+        approveBtn.addEventListener("click", () => {
+          updateListing(listing.id, "approved", approveBtn);
+        });
+
+        const rejectBtn = document.createElement("button");
+        rejectBtn.className = "reject";
+        rejectBtn.textContent = "Reject";
+
+        rejectBtn.addEventListener("click", () => {
+          updateListing(listing.id, "rejected", rejectBtn);
+        });
+
+        card.appendChild(approveBtn);
+        card.appendChild(rejectBtn);
+      }
+
+      listingsContainer.appendChild(card);
+    });
+  }
+
+  async function updateListing(id, newStatus, button) {
+    const confirmed = confirm(
+      "Are you sure you want to " + newStatus + " this listing?"
+    );
+
+    if (!confirmed) return;
+
+    button.disabled = true;
+    button.textContent = "Please wait...";
+
+    const { error } = await supabaseClient
+      .from("email_listings")
+      .update({ status: newStatus })
+      .eq("id", id);
+
+    if (error) {
+      alert("Update failed: " + error.message);
+      button.disabled = false;
+      button.textContent =
+        newStatus === "approved" ? "Approve" : "Reject";
+      return;
+    }
+
+    alert("Listing " + newStatus + " successfully.");
+    await loadListings();
+  }
+
+  document.getElementById("refreshBtn")
+    .addEventListener("click", loadListings);
+
+  document.getElementById("logoutBtn")
+    .addEventListener("click", async () => {
+      const { error } = await supabaseClient.auth.signOut();
+
+      if (error) {
+        alert("Logout failed: " + error.message);
+        return;
+      }
+
+      window.location.href = "login.html";
+    });
+
+  checkAdmin();
+</script>
 
 </body>
-                                  </html>
-                                  
+</html>
