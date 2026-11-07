@@ -7,6 +7,8 @@
 <meta name="theme-color" content="#171d50">
 <title>My Dashboard - TaskPayout</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 * {
   box-sizing: border-box;
@@ -16,263 +18,127 @@
 }
 
 body {
-  background: #f5f6fc;
-  color: #171d50;
+  background: #f4f5ff;
+  color: #222;
 }
 
-.layout {
-  min-height: 100vh;
-}
-
-.main {
-  width: 100%;
-}
-
-.topbar {
-  background: white;
-  padding: 18px 25px;
+.navbar {
+  background: #171d50;
+  color: white;
+  padding: 17px 20px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 18px;
-  box-shadow: 0 3px 15px #00000008;
-  position: sticky;
-  top: 0;
-  z-index: 10;
 }
 
-.topbar h2 {
-  font-size: 20px;
+.navbar h2 {
+  font-size: 21px;
 }
 
-.menu-button {
-  background: #171d50;
+.navbar a {
   color: white;
-  border: none;
-  width: 43px;
-  height: 43px;
-  border-radius: 9px;
-  font-size: 25px;
-  cursor: pointer;
-  margin: 0;
-  padding: 0;
-}
-
-.profile {
-  background: #f0edff;
-  color: #5545e8;
-  padding: 10px 15px;
-  border-radius: 25px;
-  font-size: 13px;
-  font-weight: bold;
-  margin-left: auto;
-  max-width: 150px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* SIDE MENU */
-
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: -280px;
-  width: 270px;
-  height: 100%;
-  background: #171d50;
-  color: white;
-  padding: 28px 20px;
-  z-index: 30;
-  transition: left .3s ease;
-}
-
-.sidebar.open {
-  left: 0;
-}
-
-.logo {
-  font-size: 25px;
-  font-weight: 800;
-  margin-bottom: 45px;
-}
-
-.logo span {
-  color: #a99fff;
-}
-
-.menu-heading {
-  color: #aeb3d1;
-  font-size: 11px;
-  margin: 25px 10px 12px;
-  text-transform: uppercase;
-}
-
-.sidebar a,
-.sidebar button {
-  display: block;
-  width: 100%;
-  color: #d8dbed;
-  padding: 15px;
-  margin: 8px 0;
-  border-radius: 9px;
   text-decoration: none;
   font-size: 14px;
-  text-align: left;
-  background: transparent;
-  border: none;
-  cursor: pointer;
 }
 
-.sidebar a:hover,
-.sidebar button:hover {
-  background: #5545e8;
-  color: white;
-}
-
-.close-menu {
-  position: absolute;
-  top: 20px;
-  right: 15px;
-  color: white;
-  background: transparent;
-  border: none;
-  font-size: 25px;
-  cursor: pointer;
-  margin: 0;
-  padding: 5px;
-}
-
-.overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: #00000070;
-  z-index: 20;
-}
-
-.overlay.show {
-  display: block;
-}
-
-/* PAGE CONTENT */
-
-.content {
-  padding: 30px;
-  max-width: 1200px;
-  margin: auto;
+.container {
+  max-width: 950px;
+  margin: 25px auto;
+  padding: 15px;
 }
 
 .welcome {
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .welcome h2 {
-  font-size: 25px;
-  margin-bottom: 8px;
-}
-
-.welcome p {
-  color: #85889c;
-  font-size: 14px;
+  color: #171d50;
+  margin-bottom: 6px;
 }
 
 .wallet {
-  background: linear-gradient(120deg, #171d50, #5545e8);
+  background: linear-gradient(135deg, #5545e8, #171d50);
   color: white;
-  padding: 30px;
-  border-radius: 17px;
-  margin-bottom: 25px;
-}
-
-.wallet small {
-  color: #d8d5ff;
-}
-
-.wallet h1 {
-  font-size: 36px;
-  margin: 12px 0;
+  padding: 25px;
+  border-radius: 14px;
+  margin-bottom: 20px;
 }
 
 .wallet p {
-  font-size: 13px;
-  color: #ddd9ff;
+  font-size: 14px;
+}
+
+.wallet h1 {
+  margin: 12px 0;
+  font-size: 32px;
 }
 
 .stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-bottom: 30px;
+  gap: 12px;
+  margin-bottom: 22px;
 }
 
-.stat-card,
-.panel {
+.stat {
   background: white;
-  padding: 22px;
-  border-radius: 13px;
-  border: 1px solid #eee;
-  box-shadow: 0 4px 15px #00000005;
+  padding: 18px 12px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px #0000000a;
 }
 
-.stat-card small {
-  color: #888;
+.stat h2 {
+  color: #5545e8;
+  margin-bottom: 5px;
+}
+
+.stat p {
   font-size: 13px;
 }
 
-.stat-card h2 {
-  margin-top: 12px;
-  font-size: 25px;
-}
-
-.panel {
-  margin-bottom: 25px;
-  padding: 25px;
-}
-
-.panel h3 {
+.section {
+  background: white;
+  padding: 22px;
+  border-radius: 12px;
   margin-bottom: 20px;
-  font-size: 18px;
+  box-shadow: 0 2px 8px #0000000a;
+}
+
+.section h3 {
+  color: #171d50;
+  margin-bottom: 17px;
 }
 
 label {
   display: block;
-  font-size: 13px;
   font-weight: 600;
-  margin: 15px 0 8px;
+  margin: 13px 0 7px;
 }
 
-input, textarea {
+input, select, textarea {
   width: 100%;
-  padding: 14px;
-  border: 1px solid #e1e2ec;
+  padding: 13px;
+  border: 1px solid #ddd;
   border-radius: 8px;
   outline: none;
-  background: #fafaff;
-  font-size: 14px;
-}
-
-input:focus, textarea:focus {
-  border-color: #5545e8;
+  font-size: 15px;
 }
 
 textarea {
-  min-height: 100px;
   resize: vertical;
+  min-height: 90px;
 }
 
-.submit-button {
+button {
   background: #5545e8;
   color: white;
   border: none;
-  padding: 14px 22px;
+  padding: 13px 20px;
   border-radius: 8px;
-  font-weight: bold;
   cursor: pointer;
-  margin-top: 18px;
-}
-
-.submit-button:hover {
-  background: #3025b5;
+  font-size: 15px;
+  margin-top: 15px;
 }
 
 button:disabled {
@@ -280,76 +146,63 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.note {
-  background: #f5f3ff;
-  color: #666;
-  padding: 13px;
-  border-radius: 8px;
-  font-size: 12px;
-  line-height: 1.6;
-  margin-top: 15px;
-}
-
-.history {
-  padding: 18px;
-  background: #fafaff;
-  border: 1px dashed #d9d9e8;
-  border-radius: 10px;
-  color: #666;
-  font-size: 13px;
-}
-
-.listing-item {
-  background: #fafaff;
+.listing {
   border: 1px solid #eee;
   padding: 15px;
   border-radius: 9px;
-  margin-bottom: 12px;
+  margin-top: 12px;
 }
 
-.listing-item p {
-  margin: 7px 0;
-  overflow-wrap: anywhere;
+.listing h4 {
+  color: #171d50;
+  margin-bottom: 7px;
 }
 
 .status {
-  color: #5545e8;
-  font-weight: bold;
-}
-
-footer {
-  text-align: center;
-  padding: 25px;
-  color: #888;
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
   font-size: 12px;
+  margin-top: 8px;
+  background: #fff3cd;
+  color: #856404;
 }
 
-@media(max-width:750px) {
-  .topbar {
-    padding: 14px;
-    gap: 12px;
-  }
+.status.approved {
+  background: #d4edda;
+  color: #155724;
+}
 
-  .topbar h2 {
-    font-size: 17px;
-  }
+.status.rejected {
+  background: #f8d7da;
+  color: #721c24;
+}
 
-  .content {
-    padding: 18px;
-  }
+.message {
+  margin-top: 12px;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
 
+.menu {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.menu a {
+  color: #5545e8;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+@media(max-width: 550px) {
   .stats {
     grid-template-columns: 1fr;
   }
 
-  .wallet h1 {
-    font-size: 30px;
-  }
-
-  .profile {
-    max-width: 105px;
-    font-size: 11px;
-    padding: 9px;
+  .section {
+    padding: 17px;
   }
 }
 </style>
@@ -357,250 +210,231 @@ footer {
 
 <body>
 
-<div class="layout">
+<nav class="navbar">
+  <h2>TaskPayout</h2>
+  <a href="#" id="logoutBtn">Logout</a>
+</nav>
 
-<!-- SIDE MENU -->
+<div class="container">
 
-<aside class="sidebar" id="sidebar">
-
-  <button class="close-menu" id="closeMenu" aria-label="Close menu">
-    ×
-  </button>
-
-  <div class="logo">Task<span>Payout.</span></div>
-
-  <p class="menu-heading">Account Menu</p>
-
-  <a href="#withdraw" class="menu-link">↗ Withdraw</a>
-
-  <a href="#support" class="menu-link">✉ Support</a>
-
-  <button type="button" id="logoutButton">↪ Logout</button>
-
-</aside>
-
-<div class="overlay" id="overlay"></div>
-
-<main class="main">
-
-  <!-- TOP BAR -->
-
-  <div class="topbar">
-
-    <button
-      class="menu-button"
-      id="menuButton"
-      aria-label="Open menu"
-      aria-expanded="false"
-    >
-      ☰
-    </button>
-
+  <div class="welcome">
     <h2>My Dashboard</h2>
-
-    <div class="profile" id="profileName">Loading...</div>
-
+    <p>Welcome to your TaskPayout account.</p>
   </div>
 
-  <div class="content">
-
-    <div class="welcome">
-      <h2 id="welcomeName">Welcome Back!</h2>
-      <p>Here's an overview of your TaskPayout account.</p>
-    </div>
-
-    <div class="wallet">
-      <small>AVAILABLE WALLET BALANCE</small>
-      <h1>₦0.00</h1>
-      <p>Wallet functionality will be connected later.</p>
-    </div>
-
-    <div class="stats">
-
-      <div class="stat-card">
-        <small>Total Listings</small>
-        <h2 id="totalListings">0</h2>
-      </div>
-
-      <div class="stat-card">
-        <small>Approved Listings</small>
-        <h2 id="approvedListings">0</h2>
-      </div>
-
-      <div class="stat-card">
-        <small>Pending Listings</small>
-        <h2 id="pendingListings">0</h2>
-      </div>
-
-    </div>
-
-    <!-- SUBMIT LISTING -->
-
-    <section class="panel" id="listing">
-
-      <h3>＋ Submit a New Listing</h3>
-
-      <form id="taskForm">
-
-        <label>Email Address</label>
-        <input
-          type="email"
-          id="emailAddress"
-          placeholder="Enter listing email address"
-          required
-        >
-
-        <label>Email Provider</label>
-        <input
-          type="text"
-          id="emailProvider"
-          placeholder="Example: Gmail"
-          required
-        >
-
-        <label>Description (Optional)</label>
-        <textarea
-          id="description"
-          placeholder="Describe your listing"
-        ></textarea>
-
-        <label>Asking Price (₦)</label>
-        <input
-          type="number"
-          id="askingPrice"
-          min="1"
-          step="0.01"
-          placeholder="Enter your asking price"
-          required
-        >
-
-        <div class="note">
-          Never enter an email password, recovery email,
-          or other login credentials. Only list items where
-          transfer is expressly permitted by the provider.
-          All new listings will be pending admin review.
-        </div>
-
-        <button type="submit" class="submit-button" id="submitButton">
-          Submit Listing →
-        </button>
-
-        <p id="listingMessage" role="status"></p>
-
-      </form>
-
-    </section>
-
-    <!-- LISTING HISTORY -->
-
-    <section class="panel" id="history">
-
-      <h3>My Listing History</h3>
-
-      <div class="history" id="listingHistory">
-        Loading your listings...
-      </div>
-
-    </section>
-
-    <!-- WITHDRAWALS -->
-
-    <section class="panel" id="withdraw">
-
-      <h3>↗ Withdrawals</h3>
-
-      <div class="history">
-        Withdrawal requests are not connected yet.
-        We will build the secure withdrawal system separately.
-      </div>
-
-    </section>
-
-    <!-- SUPPORT -->
-
-    <section class="panel" id="support">
-
-      <h3>Support</h3>
-
-      <div class="history">
-        Need help with your account?
-        Support contact details will be added here.
-      </div>
-
-    </section>
-
+  <div class="wallet">
+    <p>My Wallet Balance</p>
+    <h1>₦0.00</h1>
+    <p>Your approved rewards will appear here when wallet integration is completed.</p>
   </div>
 
-  <footer>
-    © 2026 TaskPayout. All rights reserved.
-  </footer>
+  <div class="stats">
+    <div class="stat">
+      <h2 id="totalCount">0</h2>
+      <p>Total Submissions</p>
+    </div>
 
-</main>
+    <div class="stat">
+      <h2 id="approvedCount">0</h2>
+      <p>Approved</p>
+    </div>
+
+    <div class="stat">
+      <h2 id="pendingCount">0</h2>
+      <p>Pending</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Submit a Product or Service</h3>
+
+    <form id="listingForm">
+
+      <label for="productName">Product or Service Name</label>
+      <input
+        type="text"
+        id="productName"
+        maxlength="120"
+        placeholder="Enter product or service name"
+        required
+      >
+
+      <label for="category">Category</label>
+      <select id="category" required>
+        <option value="">Select a category</option>
+        <option value="Digital Designs">Digital Designs</option>
+        <option value="Templates">Templates</option>
+        <option value="Graphics">Graphics</option>
+        <option value="Photography">Photography</option>
+        <option value="Writing Services">Writing Services</option>
+        <option value="Other Permitted Services">Other Permitted Services</option>
+      </select>
+
+      <label for="description">Description (Optional)</label>
+      <textarea
+        id="description"
+        maxlength="1000"
+        placeholder="Describe your product or service"
+      ></textarea>
+
+      <button type="submit" id="submitBtn">
+        Submit for Review
+      </button>
+
+      <p id="formMessage" class="message"></p>
+
+    </form>
+
+    <p class="message">
+      Only submit products and services you own or are authorized to offer.
+      Never submit passwords, login credentials, or another person's account.
+    </p>
+  </div>
+
+  <div class="section">
+    <h3>My Submission History</h3>
+    <div id="listingHistory">Loading submissions...</div>
+  </div>
+
+  <div class="section">
+    <h3>Withdraw Funds</h3>
+    <p>Withdrawal requests will be connected after secure wallet integration is completed.</p>
+  </div>
+
+  <div class="section">
+    <h3>Account Support</h3>
+    <p>Contact support if you need help with your account or submissions.</p>
+  </div>
+
+  <div class="section menu">
+    <a href="index.html">Home</a>
+    <a href="admin.html">Admin Panel</a>
+    <a href="login.html">Login</a>
+  </div>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
+const SUPABASE_URL = "https://czimlirfmlsiybuqllsf.supabase.co";
+const SUPABASE_KEY = "sb_publishable_2rDw4HNQME_r9IK1c7l1tg_1JOnxoBE";
 
-const SUPABASE_URL =
-  "https://czimlirfmlsiybuqllsf.supabase.co";
-
-const SUPABASE_KEY =
-  "sb_publishable_2rDw4HNQME_r9IK1c7l1tg_1JOnxoBE";
-
-const supabaseClient = window.supabase.createClient(
+const db = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
 
 let currentUser = null;
 
-// MENU CONTROLS
-
-const sidebar = document.getElementById("sidebar");
-const overlay = document.getElementById("overlay");
-const menuButton = document.getElementById("menuButton");
-
-function openMenu() {
-  sidebar.classList.add("open");
-  overlay.classList.add("show");
-  menuButton.setAttribute("aria-expanded", "true");
-}
-
-function closeMenu() {
-  sidebar.classList.remove("open");
-  overlay.classList.remove("show");
-  menuButton.setAttribute("aria-expanded", "false");
-}
-
-menuButton.addEventListener("click", openMenu);
-
-document.getElementById("closeMenu")
-  .addEventListener("click", closeMenu);
-
-overlay.addEventListener("click", closeMenu);
-
-document.querySelectorAll(".menu-link").forEach(link => {
-  link.addEventListener("click", closeMenu);
-});
-
-// CHECK LOGIN
-
 async function checkLogin() {
-
-  const { data, error } =
-    await supabaseClient.auth.getUser();
+  const { data, error } = await db.auth.getUser();
 
   if (error || !data.user) {
-    window.location.replace("login.html");
+    window.location.href = "login.html";
     return;
   }
 
   currentUser = data.user;
+  loadListings();
+}
 
-  const metadata = currentUser.user_metadata || {};
+async function loadListings() {
+  const history = document.getElementById("listingHistory");
 
-  const name = metadata.full_name || currentUser.email;
+  const { data, error } = await db
+    .from("product_listings")
+    .select("id, product_name, category, description, status, created_at")
+    .eq("user_id", currentUser.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    history.textContent = "Could not load submissions: " + error.message;
+    return;
+  }
+
+  const listings = data || [];
+
+  document.getElementById("totalCount").textContent = listings.length;
+  document.getElementById("approvedCount").textContent =
+    listings.filter(item => item.status === "approved").length;
+  document.getElementById("pendingCount").textContent =
+    listings.filter(item => item.status === "pending").length;
+
+  history.replaceChildren();
+
+  if (listings.length === 0) {
+    history.textContent = "You have not submitted anything yet.";
+    return;
+  }
+
+  listings.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "listing";
+
+    const title = document.createElement("h4");
+    title.textContent = item.product_name;
+
+    const category = document.createElement("p");
+    category.textContent = "Category: " + item.category;
+
+    const description = document.createElement("p");
+    description.textContent = item.description || "No description provided.";
+
+    const status = document.createElement("span");
+    status.className = "status " + item.status;
+    status.textContent = item.status.toUpperCase();
+
+    card.append(title, category, description, status);
+    history.appendChild(card);
+  });
+}
+
+document.getElementById("listingForm").addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  const button = document.getElementById("submitBtn");
+  const message = document.getElementById("formMessage");
+
+  button.disabled = true;
+  button.textContent = "Submitting...";
+  message.textContent = "";
+
+  const productName = document.getElementById("productName").value.trim();
+  const category = document.getElementById("category").value;
+  const description = document.getElementById("description").value.trim();
+
+  const { error } = await db
+    .from("product_listings")
+    .insert({
+      user_id: currentUser.id,
+      product_name: productName,
+      category: category,
+      description: description || null
+    });
+
+  if (error) {
+    message.textContent = "Submission failed: " + error.message;
+  } else {
+    message.textContent = "Your submission has been sent for review!";
+    this.reset();
+    await loadListings();
+  }
+
+  button.disabled = false;
+  button.textContent = "Submit for Review";
+});
+
+document.getElementById("logoutBtn").addEventListener("click", async function(event) {
+  event.preventDefault();
+  await db.auth.signOut();
+  window.location.href = "login.html";
+});
+
+checkLogin();
+</script>
+
+</body>
+</html>
+ll_name || currentUser.email;
 
   document.getElementById("welcomeName").textContent =
     "Welcome, " + name + "! 👋";
