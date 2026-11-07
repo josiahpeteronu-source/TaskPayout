@@ -2,530 +2,637 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#171d50">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#171d50">
+<title>My Dashboard - TaskPayout</title>
 
-  <title>My Dashboard - TaskPayout</title>
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Arial, sans-serif;
-    }
+body {
+  background: #f5f6fc;
+  color: #171d50;
+}
 
-    html {
-      scroll-behavior: smooth;
-    }
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
 
-    body {
-      background: #f5f6fc;
-      color: #171d50;
-    }
+.sidebar {
+  width: 245px;
+  background: #171d50;
+  color: white;
+  padding: 30px 20px;
+  flex-shrink: 0;
+}
 
-    .layout {
-      display: flex;
-      min-height: 100vh;
-    }
+.logo {
+  font-size: 25px;
+  font-weight: 800;
+  margin-bottom: 45px;
+}
 
-    /* SIDEBAR */
+.logo span {
+  color: #a99fff;
+}
 
-    .sidebar {
-      width: 245px;
-      background: #171d50;
-      color: white;
-      padding: 30px 20px;
-      flex-shrink: 0;
-    }
+.sidebar p {
+  color: #aeb3d1;
+  font-size: 11px;
+  margin: 25px 10px 12px;
+  text-transform: uppercase;
+}
 
-    .logo {
-      font-size: 25px;
-      font-weight: 800;
-      margin-bottom: 45px;
-    }
+.sidebar a {
+  display: block;
+  color: #d8dbed;
+  padding: 14px;
+  margin: 7px 0;
+  border-radius: 9px;
+  text-decoration: none;
+  font-size: 14px;
+}
 
-    .logo span {
-      color: #a99fff;
-    }
+.sidebar a:hover,
+.sidebar a.active {
+  background: #5545e8;
+  color: white;
+}
 
-    .sidebar p {
-      color: #aeb3d1;
-      font-size: 11px;
-      margin: 25px 10px 12px;
-      text-transform: uppercase;
-    }
+.main {
+  flex: 1;
+  min-width: 0;
+}
 
-    .sidebar a {
-      display: block;
-      color: #d8dbed;
-      padding: 14px;
-      margin: 7px 0;
-      border-radius: 9px;
-      text-decoration: none;
-      font-size: 14px;
-    }
+.topbar {
+  background: white;
+  padding: 22px 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 3px 15px #00000008;
+}
 
-    .sidebar a.active,
-    .sidebar a:hover {
-      background: #5545e8;
-      color: white;
-    }
+.profile {
+  background: #f0edff;
+  color: #5545e8;
+  padding: 10px 15px;
+  border-radius: 25px;
+  font-size: 13px;
+  font-weight: bold;
+}
 
-    /* MAIN CONTENT */
+.content {
+  padding: 30px;
+  max-width: 1200px;
+  margin: auto;
+}
 
-    .main {
-      flex: 1;
-      min-width: 0;
-    }
+.welcome {
+  margin-bottom: 25px;
+}
 
-    .topbar {
-      background: white;
-      padding: 22px 35px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 3px 15px #00000008;
-    }
+.welcome h2 {
+  font-size: 25px;
+  margin-bottom: 8px;
+}
 
-    .topbar h2 {
-      font-size: 21px;
-    }
+.welcome p {
+  color: #85889c;
+  font-size: 14px;
+}
 
-    .profile {
-      background: #f0edff;
-      color: #5545e8;
-      padding: 10px 15px;
-      border-radius: 25px;
-      font-size: 13px;
-      font-weight: bold;
-    }
+.wallet {
+  background: linear-gradient(120deg, #171d50, #5545e8);
+  color: white;
+  padding: 30px;
+  border-radius: 17px;
+  margin-bottom: 25px;
+}
 
-    .content {
-      padding: 30px;
-      max-width: 1200px;
-      margin: auto;
-    }
+.wallet small {
+  color: #d8d5ff;
+}
 
-    .welcome {
-      margin-bottom: 25px;
-    }
+.wallet h1 {
+  font-size: 36px;
+  margin: 12px 0;
+}
 
-    .welcome h2 {
-      font-size: 25px;
-      margin-bottom: 8px;
-    }
+.wallet p {
+  font-size: 13px;
+  color: #ddd9ff;
+}
 
-    .welcome p {
-      color: #85889c;
-      font-size: 14px;
-    }
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 30px;
+}
 
-    /* WALLET */
+.stat-card,
+.panel {
+  background: white;
+  padding: 22px;
+  border-radius: 13px;
+  border: 1px solid #eee;
+  box-shadow: 0 4px 15px #00000005;
+}
 
-    .wallet {
-      background: linear-gradient(120deg, #171d50, #5545e8);
-      color: white;
-      padding: 30px;
-      border-radius: 17px;
-      margin-bottom: 25px;
-      box-shadow: 0 10px 25px #5545e830;
-    }
+.stat-card small {
+  color: #888;
+  font-size: 13px;
+}
 
-    .wallet small {
-      color: #d8d5ff;
-    }
+.stat-card h2 {
+  margin-top: 12px;
+  font-size: 25px;
+}
 
-    .wallet h1 {
-      font-size: 36px;
-      margin: 12px 0;
-    }
+.panel {
+  margin-bottom: 25px;
+  padding: 25px;
+}
 
-    .wallet p {
-      font-size: 13px;
-      color: #ddd9ff;
-    }
+.panel h3 {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
 
-    /* STATISTICS */
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 15px 0 8px;
+}
 
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-      margin-bottom: 30px;
-    }
+input, textarea {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #e1e2ec;
+  border-radius: 8px;
+  outline: none;
+  background: #fafaff;
+  font-size: 14px;
+}
 
-    .stat-card {
-      background: white;
-      padding: 22px;
-      border-radius: 13px;
-      border: 1px solid #eee;
-      box-shadow: 0 4px 15px #00000005;
-    }
+input:focus, textarea:focus {
+  border-color: #5545e8;
+}
 
-    .stat-card small {
-      color: #888;
-      font-size: 13px;
-    }
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
 
-    .stat-card h2 {
-      margin-top: 12px;
-      font-size: 25px;
-    }
+button {
+  background: #5545e8;
+  color: white;
+  border: none;
+  padding: 14px 22px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 18px;
+}
 
-    /* FORMS AND PANELS */
+button:hover {
+  background: #3025b5;
+}
 
-    .panel {
-      background: white;
-      padding: 25px;
-      border-radius: 14px;
-      margin-bottom: 25px;
-      border: 1px solid #eee;
-      box-shadow: 0 4px 18px #00000005;
-    }
+button:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
 
-    .panel h3 {
-      margin-bottom: 20px;
-      font-size: 18px;
-    }
+.note {
+  background: #f5f3ff;
+  color: #666;
+  padding: 13px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.6;
+  margin-top: 15px;
+}
 
-    label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      margin: 15px 0 8px;
-    }
+.history {
+  padding: 18px;
+  background: #fafaff;
+  border: 1px dashed #d9d9e8;
+  border-radius: 10px;
+  color: #666;
+  font-size: 13px;
+}
 
-    input,
-    textarea {
-      width: 100%;
-      padding: 14px;
-      border: 1px solid #e1e2ec;
-      border-radius: 8px;
-      outline: none;
-      background: #fafaff;
-      font-size: 14px;
-    }
+.listing-item {
+  background: #fafaff;
+  border: 1px solid #eee;
+  padding: 15px;
+  border-radius: 9px;
+  margin-bottom: 12px;
+}
 
-    input:focus,
-    textarea:focus {
-      border-color: #5545e8;
-    }
+.listing-item p {
+  margin: 7px 0;
+  overflow-wrap: anywhere;
+}
 
-    textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
+.status {
+  color: #5545e8;
+  font-weight: bold;
+}
 
-    button {
-      background: #5545e8;
-      color: white;
-      border: none;
-      padding: 14px 22px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 18px;
-    }
+footer {
+  text-align: center;
+  padding: 25px;
+  color: #888;
+  font-size: 12px;
+}
 
-    button:hover {
-      background: #3025b5;
-    }
+@media(max-width:750px) {
+  .layout {
+    display: block;
+  }
 
-    .note {
-      background: #f5f3ff;
-      color: #666;
-      padding: 13px;
-      border-radius: 8px;
-      font-size: 12px;
-      line-height: 1.6;
-      margin-top: 15px;
-    }
+  .sidebar {
+    width: 100%;
+    padding: 15px;
+  }
 
-    .history {
-      padding: 25px;
-      background: #fafaff;
-      border: 1px dashed #d9d9e8;
-      border-radius: 10px;
-      text-align: center;
-      color: #888;
-      font-size: 13px;
-    }
+  .logo {
+    margin-bottom: 12px;
+  }
 
-    footer {
-      text-align: center;
-      padding: 25px;
-      color: #888;
-      font-size: 12px;
-    }
+  .sidebar p {
+    display: none;
+  }
 
-    /* MOBILE DESIGN */
+  .sidebar a {
+    display: inline-block;
+    padding: 10px;
+    margin: 3px;
+    font-size: 12px;
+  }
 
-    @media(max-width: 750px) {
-      .layout {
-        display: block;
-      }
+  .topbar {
+    padding: 17px;
+  }
 
-      .sidebar {
-        width: 100%;
-        padding: 15px;
-      }
+  .content {
+    padding: 18px;
+  }
 
-      .logo {
-        margin-bottom: 12px;
-      }
+  .stats {
+    grid-template-columns: 1fr;
+  }
 
-      .sidebar p {
-        display: none;
-      }
-
-      .sidebar a {
-        display: inline-block;
-        padding: 10px;
-        margin: 3px;
-        font-size: 12px;
-      }
-
-      .topbar {
-        padding: 17px;
-      }
-
-      .content {
-        padding: 18px;
-      }
-
-      .stats {
-        grid-template-columns: 1fr;
-      }
-
-      .wallet h1 {
-        font-size: 30px;
-      }
-    }
-  </style>
+  .wallet h1 {
+    font-size: 30px;
+  }
+}
+</style>
 </head>
 
 <body>
 
 <div class="layout">
 
-  <!-- SIDEBAR -->
+<aside class="sidebar">
 
-  <aside class="sidebar">
+  <div class="logo">Task<span>Payout.</span></div>
 
-    <div class="logo">Task<span>Payout.</span></div>
+  <p>Main Menu</p>
 
-    <p>Main Menu</p>
+  <a href="dashboard.html" class="active">▦ Dashboard</a>
+  <a href="#listing">＋ Submit Listing</a>
+  <a href="#history">▤ My Listings</a>
+  <a href="#withdraw">↗ Withdrawals</a>
 
-    <a href="dashboard.html" class="active">▦ Dashboard</a>
-    <a href="#listing">＋ Submit Listing</a>
-    <a href="#history">▤ My Listings</a>
-    <a href="#withdraw">↗ Withdrawals</a>
+  <p>Account</p>
 
-    <p>Account</p>
+  <a href="index.html">⌂ Visit Website</a>
+  <a href="#" id="logoutButton">↪ Logout</a>
 
-    <a href="index.html">⌂ Visit Website</a>
-    <a href="login.html">↪ Logout</a>
+</aside>
 
-  </aside>
+<main class="main">
 
-  <!-- MAIN CONTENT -->
+  <div class="topbar">
+    <h2>My Dashboard</h2>
+    <div class="profile" id="profileName">Loading...</div>
+  </div>
 
-  <main class="main">
+  <div class="content">
 
-    <div class="topbar">
-      <h2>My Dashboard</h2>
-      <div class="profile">My Account</div>
+    <div class="welcome">
+      <h2 id="welcomeName">Welcome Back!</h2>
+      <p>Here's an overview of your TaskPayout account.</p>
     </div>
 
-    <div class="content">
+    <div class="wallet">
+      <small>AVAILABLE WALLET BALANCE</small>
+      <h1>₦0.00</h1>
+      <p>Wallet functionality will be connected later.</p>
+    </div>
 
-      <!-- WELCOME -->
+    <div class="stats">
 
-      <div class="welcome">
-        <h2>Welcome Back! 👋</h2>
-        <p>Here's an overview of your TaskPayout account.</p>
+      <div class="stat-card">
+        <small>Total Listings</small>
+        <h2 id="totalListings">0</h2>
       </div>
 
-      <!-- WALLET -->
-
-      <div class="wallet">
-        <small>AVAILABLE WALLET BALANCE</small>
-        <h1>₦0.00</h1>
-        <p>Your available balance will appear here.</p>
+      <div class="stat-card">
+        <small>Approved Listings</small>
+        <h2 id="approvedListings">0</h2>
       </div>
 
-      <!-- STATISTICS -->
-
-      <div class="stats">
-
-        <div class="stat-card">
-          <small>Total Listings</small>
-          <h2>0</h2>
-        </div>
-
-        <div class="stat-card">
-          <small>Approved Listings</small>
-          <h2>0</h2>
-        </div>
-
-        <div class="stat-card">
-          <small>Pending Withdrawals</small>
-          <h2>0</h2>
-        </div>
-
+      <div class="stat-card">
+        <small>Pending Listings</small>
+        <h2 id="pendingListings">0</h2>
       </div>
-
-      <!-- SUBMIT LISTING -->
-
-      <section class="panel" id="listing">
-
-        <h3>＋ Submit a New Email</h3>
-
-        <form id="taskForm">
-
-          <label>Email</label>
-
-          <input
-            type="text"
-            placeholder="Enter listing title"
-            required
-          >
-
-          <label>password </label>
-
-          <input
-            type="text"
-            placeholder="Enter Emaail password"
-            required
-          >
-
-          <label>Recovery Email(Optional)</label>
-
-          <textarea
-            placeholder="Enter Recovery (optional)"
-          ></textarea>
-
-        
-
-          <button type="submit">
-            Submit Email→
-          </button>
-
-        </form>
-
-      </section>
-
-      <!-- LISTING HISTORY -->
-
-      <section class="panel" id="history">
-
-        <h3>My Email History</h3>
-
-        <div class="history">
-          <p>No listings submitted yet.</p>
-        </div>
-
-      </section>
-
-      <!-- WITHDRAWAL -->
-
-      <section class="panel" id="withdraw">
-
-        <h3>↗ Request a Withdrawal</h3>
-
-        <form id="withdrawForm">
-
-          <label>Withdrawal Amount (Minimum ₦100)</label>
-
-          <input
-            type="number"
-            min="100"
-            placeholder="Enter amount"
-            required
-          >
-
-          <label>Bank Name</label>
-
-          <input
-            type="text"
-            placeholder="Enter bank name"
-            required
-          >
-
-          <label>Account Number</label>
-
-          <input
-            type="text"
-            inputmode="numeric"
-            maxlength="10"
-            pattern="[0-9]{10}"
-            placeholder="Enter 10-digit account number"
-            required
-          >
-
-          <label>Account Name</label>
-
-          <input
-            type="text"
-            placeholder="Enter account name"
-            required
-          >
-
-          <button type="submit">
-            Request Withdrawal →
-          </button>
-
-        </form>
-
-      </section>
-
-      <!-- WITHDRAWAL HISTORY -->
-
-      <section class="panel">
-
-        <h3>My Withdrawal History</h3>
-
-        <div class="history">
-          <p>No withdrawal requests yet.</p>
-        </div>
-
-      </section>
 
     </div>
 
-    <!-- FOOTER -->
+    <!-- SUBMIT LISTING -->
 
-    <footer>
-      © 2026 TaskPayout. All rights reserved.
-    </footer>
+    <section class="panel" id="listing">
 
-  </main>
+      <h3>＋ Submit a New Listing</h3>
 
+      <form id="taskForm">
+
+        <label>Email Address</label>
+        <input
+          type="email"
+          id="emailAddress"
+          placeholder="Enter listing email address"
+          required
+        >
+
+        <label>Email Provider</label>
+        <input
+          type="text"
+          id="emailProvider"
+          placeholder="Example: Gmail"
+          required
+        >
+
+        <label>Description (Optional)</label>
+        <textarea
+          id="description"
+          placeholder="Describe your listing"
+        ></textarea>
+
+        <label>Asking Price (₦)</label>
+        <input
+          type="number"
+          id="askingPrice"
+          min="1"
+          step="0.01"
+          placeholder="Enter your asking price"
+          required
+        >
+
+        <div class="note">
+          Never enter an email password, recovery email,
+          or other login credentials. Only list items where
+          transfer is expressly permitted by the provider.
+          All new listings will be pending admin review.
+        </div>
+
+        <button type="submit" id="submitButton">
+          Submit Listing →
+        </button>
+
+        <p id="listingMessage" role="status"></p>
+
+      </form>
+
+    </section>
+
+    <!-- LISTING HISTORY -->
+
+    <section class="panel" id="history">
+
+      <h3>My Listing History</h3>
+
+      <div class="history" id="listingHistory">
+        Loading your listings...
+      </div>
+
+    </section>
+
+    <!-- WITHDRAWALS -->
+
+    <section class="panel" id="withdraw">
+
+      <h3>↗ Withdrawals</h3>
+
+      <div class="history">
+        Withdrawal requests are not connected yet.
+        We will build the secure withdrawal system separately.
+      </div>
+
+    </section>
+
+  </div>
+
+  <footer>
+    © 2026 TaskPayout. All rights reserved.
+  </footer>
+
+</main>
 </div>
 
-<!-- FORM PLACEHOLDERS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
-  document.getElementById("taskForm")
-    .addEventListener("submit", function(event) {
+const SUPABASE_URL =
+  "https://czimlirfmlsiybuqllsf.supabase.co";
 
-      event.preventDefault();
+const SUPABASE_KEY =
+  "sb_publishable_2rDw4HNQME_r9IK1c7l1tg_1JOnxoBE";
 
-      alert("Listing submission will work after database connection.");
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
-    });
+let currentUser = null;
 
-  document.getElementById("withdrawForm")
-    .addEventListener("submit", function(event) {
+// CHECK LOGIN
 
-      event.preventDefault();
+async function checkLogin() {
 
-      alert("Withdrawal will work after database connection.");
+  const { data, error } =
+    await supabaseClient.auth.getUser();
 
-    });
+  if (error || !data.user) {
+    window.location.replace("login.html");
+    return;
+  }
+
+  currentUser = data.user;
+
+  const metadata = currentUser.user_metadata || {};
+
+  const name = metadata.full_name || currentUser.email;
+
+  document.getElementById("welcomeName").textContent =
+    "Welcome, " + name + "! 👋";
+
+  document.getElementById("profileName").textContent = name;
+
+  await loadListings();
+}
+
+// LOAD USER'S OWN LISTINGS
+
+async function loadListings() {
+
+  const history = document.getElementById("listingHistory");
+
+  const { data, error } = await supabaseClient
+    .from("email_listings")
+    .select("id,email_address,email_provider,description,asking_price,status,created_at")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    history.textContent = "Could not load listings: " + error.message;
+    return;
+  }
+
+  const listings = data || [];
+
+  document.getElementById("totalListings").textContent =
+    listings.length;
+
+  document.getElementById("approvedListings").textContent =
+    listings.filter(item => item.status === "approved").length;
+
+  document.getElementById("pendingListings").textContent =
+    listings.filter(item => item.status === "pending").length;
+
+  history.replaceChildren();
+
+  if (listings.length === 0) {
+    history.textContent = "No listings submitted yet.";
+    return;
+  }
+
+  listings.forEach(item => {
+
+    const card = document.createElement("div");
+    card.className = "listing-item";
+
+    const title = document.createElement("strong");
+    title.textContent = item.email_address;
+
+    const provider = document.createElement("p");
+    provider.textContent = "Provider: " + item.email_provider;
+
+    const price = document.createElement("p");
+    price.textContent = "Price: ₦" + item.asking_price;
+
+    const status = document.createElement("p");
+    status.className = "status";
+    status.textContent = "Status: " + item.status;
+
+    card.append(title, provider, price, status);
+
+    if (item.description) {
+      const description = document.createElement("p");
+      description.textContent = "Description: " + item.description;
+      card.append(description);
+    }
+
+    history.append(card);
+  });
+}
+
+// SUBMIT LISTING
+
+document.getElementById("taskForm")
+.addEventListener("submit", async function(event) {
+
+  event.preventDefault();
+
+  if (!currentUser) return;
+
+  const button = document.getElementById("submitButton");
+  const message = document.getElementById("listingMessage");
+
+  button.disabled = true;
+  button.textContent = "Submitting...";
+  message.textContent = "";
+
+  const listing = {
+    user_id: currentUser.id,
+    email_address: document.getElementById("emailAddress").value.trim(),
+    email_provider: document.getElementById("emailProvider").value.trim(),
+    description: document.getElementById("description").value.trim() || null,
+    asking_price: Number(document.getElementById("askingPrice").value),
+    status: "pending"
+  };
+
+  try {
+
+    const { error } = await supabaseClient
+      .from("email_listings")
+      .insert(listing);
+
+    if (error) throw error;
+
+    message.style.color = "green";
+    message.textContent = "Listing submitted successfully! It is awaiting admin review.";
+
+    this.reset();
+
+    await loadListings();
+
+  } catch (error) {
+
+    message.style.color = "red";
+    message.textContent = error.message;
+
+  }
+
+  button.disabled = false;
+  button.textContent = "Submit Listing →";
+
+});
+
+// SECURE LOGOUT
+
+document.getElementById("logoutButton")
+.addEventListener("click", async function(event) {
+
+  event.preventDefault();
+
+  const { error } = await supabaseClient.auth.signOut();
+
+  if (error) {
+    alert("Could not log out: " + error.message);
+    return;
+  }
+
+  window.location.replace("login.html");
+
+});
+
+// START DASHBOARD
+
+checkLogin();
 
 </script>
 
