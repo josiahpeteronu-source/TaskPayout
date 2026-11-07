@@ -21,16 +21,73 @@ body {
 }
 
 .layout {
-  display: flex;
   min-height: 100vh;
 }
 
-.sidebar {
-  width: 245px;
+.main {
+  width: 100%;
+}
+
+.topbar {
+  background: white;
+  padding: 18px 25px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  box-shadow: 0 3px 15px #00000008;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.topbar h2 {
+  font-size: 20px;
+}
+
+.menu-button {
   background: #171d50;
   color: white;
-  padding: 30px 20px;
-  flex-shrink: 0;
+  border: none;
+  width: 43px;
+  height: 43px;
+  border-radius: 9px;
+  font-size: 25px;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+}
+
+.profile {
+  background: #f0edff;
+  color: #5545e8;
+  padding: 10px 15px;
+  border-radius: 25px;
+  font-size: 13px;
+  font-weight: bold;
+  margin-left: auto;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* SIDE MENU */
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -280px;
+  width: 270px;
+  height: 100%;
+  background: #171d50;
+  color: white;
+  padding: 28px 20px;
+  z-index: 30;
+  transition: left .3s ease;
+}
+
+.sidebar.open {
+  left: 0;
 }
 
 .logo {
@@ -43,51 +100,61 @@ body {
   color: #a99fff;
 }
 
-.sidebar p {
+.menu-heading {
   color: #aeb3d1;
   font-size: 11px;
   margin: 25px 10px 12px;
   text-transform: uppercase;
 }
 
-.sidebar a {
+.sidebar a,
+.sidebar button {
   display: block;
+  width: 100%;
   color: #d8dbed;
-  padding: 14px;
-  margin: 7px 0;
+  padding: 15px;
+  margin: 8px 0;
   border-radius: 9px;
   text-decoration: none;
   font-size: 14px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
 }
 
 .sidebar a:hover,
-.sidebar a.active {
+.sidebar button:hover {
   background: #5545e8;
   color: white;
 }
 
-.main {
-  flex: 1;
-  min-width: 0;
+.close-menu {
+  position: absolute;
+  top: 20px;
+  right: 15px;
+  color: white;
+  background: transparent;
+  border: none;
+  font-size: 25px;
+  cursor: pointer;
+  margin: 0;
+  padding: 5px;
 }
 
-.topbar {
-  background: white;
-  padding: 22px 35px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 3px 15px #00000008;
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #00000070;
+  z-index: 20;
 }
 
-.profile {
-  background: #f0edff;
-  color: #5545e8;
-  padding: 10px 15px;
-  border-radius: 25px;
-  font-size: 13px;
-  font-weight: bold;
+.overlay.show {
+  display: block;
 }
+
+/* PAGE CONTENT */
 
 .content {
   padding: 30px;
@@ -193,7 +260,7 @@ textarea {
   resize: vertical;
 }
 
-button {
+.submit-button {
   background: #5545e8;
   color: white;
   border: none;
@@ -204,7 +271,7 @@ button {
   margin-top: 18px;
 }
 
-button:hover {
+.submit-button:hover {
   background: #3025b5;
 }
 
@@ -258,32 +325,13 @@ footer {
 }
 
 @media(max-width:750px) {
-  .layout {
-    display: block;
-  }
-
-  .sidebar {
-    width: 100%;
-    padding: 15px;
-  }
-
-  .logo {
-    margin-bottom: 12px;
-  }
-
-  .sidebar p {
-    display: none;
-  }
-
-  .sidebar a {
-    display: inline-block;
-    padding: 10px;
-    margin: 3px;
-    font-size: 12px;
-  }
-
   .topbar {
-    padding: 17px;
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .topbar h2 {
+    font-size: 17px;
   }
 
   .content {
@@ -297,6 +345,12 @@ footer {
   .wallet h1 {
     font-size: 30px;
   }
+
+  .profile {
+    max-width: 105px;
+    font-size: 11px;
+    padding: 9px;
+  }
 }
 </style>
 </head>
@@ -305,29 +359,47 @@ footer {
 
 <div class="layout">
 
-<aside class="sidebar">
+<!-- SIDE MENU -->
+
+<aside class="sidebar" id="sidebar">
+
+  <button class="close-menu" id="closeMenu" aria-label="Close menu">
+    ×
+  </button>
 
   <div class="logo">Task<span>Payout.</span></div>
 
-  <p>Main Menu</p>
+  <p class="menu-heading">Account Menu</p>
 
-  <a href="dashboard.html" class="active">▦ Dashboard</a>
-  <a href="#listing">＋ Submit Listing</a>
-  <a href="#history">▤ My Listings</a>
-  <a href="#withdraw">↗ Withdrawals</a>
+  <a href="#withdraw" class="menu-link">↗ Withdraw</a>
 
-  <p>Account</p>
+  <a href="#support" class="menu-link">✉ Support</a>
 
-  <a href="index.html">⌂ Visit Website</a>
-  <a href="#" id="logoutButton">↪ Logout</a>
+  <button type="button" id="logoutButton">↪ Logout</button>
 
 </aside>
 
+<div class="overlay" id="overlay"></div>
+
 <main class="main">
 
+  <!-- TOP BAR -->
+
   <div class="topbar">
+
+    <button
+      class="menu-button"
+      id="menuButton"
+      aria-label="Open menu"
+      aria-expanded="false"
+    >
+      ☰
+    </button>
+
     <h2>My Dashboard</h2>
+
     <div class="profile" id="profileName">Loading...</div>
+
   </div>
 
   <div class="content">
@@ -409,7 +481,7 @@ footer {
           All new listings will be pending admin review.
         </div>
 
-        <button type="submit" id="submitButton">
+        <button type="submit" class="submit-button" id="submitButton">
           Submit Listing →
         </button>
 
@@ -444,6 +516,19 @@ footer {
 
     </section>
 
+    <!-- SUPPORT -->
+
+    <section class="panel" id="support">
+
+      <h3>Support</h3>
+
+      <div class="history">
+        Need help with your account?
+        Support contact details will be added here.
+      </div>
+
+    </section>
+
   </div>
 
   <footer>
@@ -469,6 +554,35 @@ const supabaseClient = window.supabase.createClient(
 );
 
 let currentUser = null;
+
+// MENU CONTROLS
+
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+const menuButton = document.getElementById("menuButton");
+
+function openMenu() {
+  sidebar.classList.add("open");
+  overlay.classList.add("show");
+  menuButton.setAttribute("aria-expanded", "true");
+}
+
+function closeMenu() {
+  sidebar.classList.remove("open");
+  overlay.classList.remove("show");
+  menuButton.setAttribute("aria-expanded", "false");
+}
+
+menuButton.addEventListener("click", openMenu);
+
+document.getElementById("closeMenu")
+  .addEventListener("click", closeMenu);
+
+overlay.addEventListener("click", closeMenu);
+
+document.querySelectorAll(".menu-link").forEach(link => {
+  link.addEventListener("click", closeMenu);
+});
 
 // CHECK LOGIN
 
@@ -505,6 +619,7 @@ async function loadListings() {
   const { data, error } = await supabaseClient
     .from("email_listings")
     .select("id,email_address,email_provider,description,asking_price,status,created_at")
+    .eq("user_id", currentUser.id)
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -594,7 +709,8 @@ document.getElementById("taskForm")
     if (error) throw error;
 
     message.style.color = "green";
-    message.textContent = "Listing submitted successfully! It is awaiting admin review.";
+    message.textContent =
+      "Listing submitted successfully! It is awaiting admin review.";
 
     this.reset();
 
@@ -615,14 +731,17 @@ document.getElementById("taskForm")
 // SECURE LOGOUT
 
 document.getElementById("logoutButton")
-.addEventListener("click", async function(event) {
+.addEventListener("click", async function() {
 
-  event.preventDefault();
+  this.disabled = true;
+  this.textContent = "Logging out...";
 
   const { error } = await supabaseClient.auth.signOut();
 
   if (error) {
     alert("Could not log out: " + error.message);
+    this.disabled = false;
+    this.textContent = "↪ Logout";
     return;
   }
 
@@ -637,4 +756,5 @@ checkLogin();
 </script>
 
 </body>
-</html>
+  </html>
+  
