@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#171d50">
+
 <title>My Dashboard - TaskPayout</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -116,7 +117,8 @@ label {
   margin: 13px 0 7px;
 }
 
-input, select, textarea {
+input,
+textarea {
   width: 100%;
   padding: 13px;
   border: 1px solid #ddd;
@@ -128,6 +130,11 @@ input, select, textarea {
 textarea {
   resize: vertical;
   min-height: 90px;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #5545e8;
 }
 
 button {
@@ -219,7 +226,7 @@ button:disabled {
 
   <div class="welcome">
     <h2>My Dashboard</h2>
-    <p>Welcome to your TaskPayout account.</p>
+    <p id="welcomeMessage">Welcome to your TaskPayout account.</p>
   </div>
 
   <div class="wallet">
@@ -229,6 +236,7 @@ button:disabled {
   </div>
 
   <div class="stats">
+
     <div class="stat">
       <h2 id="totalCount">0</h2>
       <p>Total Submissions</p>
@@ -243,14 +251,17 @@ button:disabled {
       <h2 id="pendingCount">0</h2>
       <p>Pending</p>
     </div>
+
   </div>
 
   <div class="section">
+
     <h3>Submit a Product or Service</h3>
 
     <form id="listingForm">
 
       <label for="productName">Product or Service Name</label>
+
       <input
         type="text"
         id="productName"
@@ -260,17 +271,17 @@ button:disabled {
       >
 
       <label for="category">Category</label>
-      <select id="category" required>
-        <option value="">Select a category</option>
-        <option value="Digital Designs">Digital Designs</option>
-        <option value="Templates">Templates</option>
-        <option value="Graphics">Graphics</option>
-        <option value="Photography">Photography</option>
-        <option value="Writing Services">Writing Services</option>
-        <option value="Other Permitted Services">Other Permitted Services</option>
-      </select>
+
+      <input
+        type="text"
+        id="category"
+        maxlength="100"
+        placeholder="Enter your own category"
+        required
+      >
 
       <label for="description">Description (Optional)</label>
+
       <textarea
         id="description"
         maxlength="1000"
@@ -289,33 +300,53 @@ button:disabled {
       Only submit products and services you own or are authorized to offer.
       Never submit passwords, login credentials, or another person's account.
     </p>
+
   </div>
 
   <div class="section">
+
     <h3>My Submission History</h3>
-    <div id="listingHistory">Loading submissions...</div>
+
+    <div id="listingHistory">
+      Loading submissions...
+    </div>
+
   </div>
 
   <div class="section">
+
     <h3>Withdraw Funds</h3>
-    <p>Withdrawal requests will be connected after secure wallet integration is completed.</p>
+
+    <p>
+      Withdrawal requests will be connected after secure wallet integration is completed.
+    </p>
+
   </div>
 
   <div class="section">
+
     <h3>Account Support</h3>
-    <p>Contact support if you need help with your account or submissions.</p>
+
+    <p>
+      Contact support if you need help with your account or submissions.
+    </p>
+
   </div>
 
   <div class="section menu">
+
     <a href="index.html">Home</a>
     <a href="admin.html">Admin Panel</a>
     <a href="login.html">Login</a>
+
   </div>
 
 </div>
 
 <script>
+
 const SUPABASE_URL = "https://czimlirfmlsiybuqllsf.supabase.co";
+
 const SUPABASE_KEY = "sb_publishable_2rDw4HNQME_r9IK1c7l1tg_1JOnxoBE";
 
 const db = window.supabase.createClient(
@@ -325,7 +356,11 @@ const db = window.supabase.createClient(
 
 let currentUser = null;
 
+
+// CHECK LOGIN
+
 async function checkLogin() {
+
   const { data, error } = await db.auth.getUser();
 
   if (error || !data.user) {
@@ -334,11 +369,22 @@ async function checkLogin() {
   }
 
   currentUser = data.user;
-  loadListings();
+
+  document.getElementById("welcomeMessage").textContent =
+    "Welcome, " + (currentUser.email || "User") + "!";
+
+  await loadListings();
+
 }
 
+
+// LOAD USER SUBMISSIONS
+
 async function loadListings() {
+
   const history = document.getElementById("listingHistory");
+
+  history.textContent = "Loading submissions...";
 
   const { data, error } = await db
     .from("product_listings")
@@ -347,204 +393,125 @@ async function loadListings() {
     .order("created_at", { ascending: false });
 
   if (error) {
-    history.textContent = "Could not load submissions: " + error.message;
+
+    history.textContent =
+      "Could not load submissions: " + error.message;
+
     return;
   }
 
   const listings = data || [];
 
-  document.getElementById("totalCount").textContent = listings.length;
+  document.getElementById("totalCount").textContent =
+    listings.length;
+
   document.getElementById("approvedCount").textContent =
     listings.filter(item => item.status === "approved").length;
+
   document.getElementById("pendingCount").textContent =
     listings.filter(item => item.status === "pending").length;
 
   history.replaceChildren();
 
   if (listings.length === 0) {
-    history.textContent = "You have not submitted anything yet.";
+
+    history.textContent =
+      "You have not submitted anything yet.";
+
     return;
   }
 
   listings.forEach(item => {
+
     const card = document.createElement("div");
+
     card.className = "listing";
 
     const title = document.createElement("h4");
+
     title.textContent = item.product_name;
 
     const category = document.createElement("p");
-    category.textContent = "Category: " + item.category;
+
+    category.textContent =
+      "Category: " + item.category;
 
     const description = document.createElement("p");
-    description.textContent = item.description || "No description provided.";
+
+    description.textContent =
+      item.description || "No description provided.";
 
     const status = document.createElement("span");
+
     status.className = "status " + item.status;
-    status.textContent = item.status.toUpperCase();
 
-    card.append(title, category, description, status);
+    status.textContent =
+      item.status.toUpperCase();
+
+    card.append(
+      title,
+      category,
+      description,
+      status
+    );
+
     history.appendChild(card);
+
   });
+
 }
 
-document.getElementById("listingForm").addEventListener("submit", async function(event) {
-  event.preventDefault();
 
-  const button = document.getElementById("submitBtn");
-  const message = document.getElementById("formMessage");
+// SUBMIT PRODUCT OR SERVICE
 
-  button.disabled = true;
-  button.textContent = "Submitting...";
-  message.textContent = "";
-
-  const productName = document.getElementById("productName").value.trim();
-  const category = document.getElementById("category").value;
-  const description = document.getElementById("description").value.trim();
-
-  const { error } = await db
-    .from("product_listings")
-    .insert({
-      user_id: currentUser.id,
-      product_name: productName,
-      category: category,
-      description: description || null
-    });
-
-  if (error) {
-    message.textContent = "Submission failed: " + error.message;
-  } else {
-    message.textContent = "Your submission has been sent for review!";
-    this.reset();
-    await loadListings();
-  }
-
-  button.disabled = false;
-  button.textContent = "Submit for Review";
-});
-
-document.getElementById("logoutBtn").addEventListener("click", async function(event) {
-  event.preventDefault();
-  await db.auth.signOut();
-  window.location.href = "login.html";
-});
-
-checkLogin();
-</script>
-
-</body>
-</html>
-ll_name || currentUser.email;
-
-  document.getElementById("welcomeName").textContent =
-    "Welcome, " + name + "! 👋";
-
-  document.getElementById("profileName").textContent = name;
-
-  await loadListings();
-}
-
-// LOAD USER'S OWN LISTINGS
-
-async function loadListings() {
-
-  const history = document.getElementById("listingHistory");
-
-  const { data, error } = await supabaseClient
-    .from("email_listings")
-    .select("id,email_address,email_provider,description,asking_price,status,created_at")
-    .eq("user_id", currentUser.id)
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    history.textContent = "Could not load listings: " + error.message;
-    return;
-  }
-
-  const listings = data || [];
-
-  document.getElementById("totalListings").textContent =
-    listings.length;
-
-  document.getElementById("approvedListings").textContent =
-    listings.filter(item => item.status === "approved").length;
-
-  document.getElementById("pendingListings").textContent =
-    listings.filter(item => item.status === "pending").length;
-
-  history.replaceChildren();
-
-  if (listings.length === 0) {
-    history.textContent = "No listings submitted yet.";
-    return;
-  }
-
-  listings.forEach(item => {
-
-    const card = document.createElement("div");
-    card.className = "listing-item";
-
-    const title = document.createElement("strong");
-    title.textContent = item.email_address;
-
-    const provider = document.createElement("p");
-    provider.textContent = "Provider: " + item.email_provider;
-
-    const price = document.createElement("p");
-    price.textContent = "Price: ₦" + item.asking_price;
-
-    const status = document.createElement("p");
-    status.className = "status";
-    status.textContent = "Status: " + item.status;
-
-    card.append(title, provider, price, status);
-
-    if (item.description) {
-      const description = document.createElement("p");
-      description.textContent = "Description: " + item.description;
-      card.append(description);
-    }
-
-    history.append(card);
-  });
-}
-
-// SUBMIT LISTING
-
-document.getElementById("taskForm")
+document.getElementById("listingForm")
 .addEventListener("submit", async function(event) {
 
   event.preventDefault();
 
   if (!currentUser) return;
 
-  const button = document.getElementById("submitButton");
-  const message = document.getElementById("listingMessage");
+  const button = document.getElementById("submitBtn");
+
+  const message = document.getElementById("formMessage");
 
   button.disabled = true;
+
   button.textContent = "Submitting...";
+
   message.textContent = "";
 
-  const listing = {
-    user_id: currentUser.id,
-    email_address: document.getElementById("emailAddress").value.trim(),
-    email_provider: document.getElementById("emailProvider").value.trim(),
-    description: document.getElementById("description").value.trim() || null,
-    asking_price: Number(document.getElementById("askingPrice").value),
-    status: "pending"
-  };
+  const productName =
+    document.getElementById("productName").value.trim();
+
+  const category =
+    document.getElementById("category").value.trim();
+
+  const description =
+    document.getElementById("description").value.trim();
 
   try {
 
-    const { error } = await supabaseClient
-      .from("email_listings")
-      .insert(listing);
+    const { error } = await db
+      .from("product_listings")
+      .insert({
+
+        user_id: currentUser.id,
+
+        product_name: productName,
+
+        category: category,
+
+        description: description || null
+
+      });
 
     if (error) throw error;
 
     message.style.color = "green";
+
     message.textContent =
-      "Listing submitted successfully! It is awaiting admin review.";
+      "Your submission has been sent for review!";
 
     this.reset();
 
@@ -553,35 +520,47 @@ document.getElementById("taskForm")
   } catch (error) {
 
     message.style.color = "red";
-    message.textContent = error.message;
+
+    message.textContent =
+      "Submission failed: " + error.message;
 
   }
 
   button.disabled = false;
-  button.textContent = "Submit Listing →";
+
+  button.textContent = "Submit for Review";
 
 });
 
-// SECURE LOGOUT
 
-document.getElementById("logoutButton")
-.addEventListener("click", async function() {
+// LOGOUT
 
-  this.disabled = true;
+document.getElementById("logoutBtn")
+.addEventListener("click", async function(event) {
+
+  event.preventDefault();
+
   this.textContent = "Logging out...";
 
-  const { error } = await supabaseClient.auth.signOut();
+  this.style.pointerEvents = "none";
+
+  const { error } = await db.auth.signOut();
 
   if (error) {
+
     alert("Could not log out: " + error.message);
-    this.disabled = false;
-    this.textContent = "↪ Logout";
+
+    this.textContent = "Logout";
+
+    this.style.pointerEvents = "auto";
+
     return;
   }
 
   window.location.replace("login.html");
 
 });
+
 
 // START DASHBOARD
 
@@ -590,5 +569,4 @@ checkLogin();
 </script>
 
 </body>
-  </html>
-  
+</html>
