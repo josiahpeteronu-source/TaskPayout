@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,13 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard - TaskPayout</title>
   <link rel="stylesheet" href="style.css">
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+    * { box-sizing: border-box; }
+
     body {
+      margin: 0;
       background: #f4f5ff;
       font-family: Arial, sans-serif;
+      color: #222;
     }
 
     .admin-container {
@@ -20,17 +24,19 @@
       padding: 15px;
     }
 
+    header { padding: 20px; }
+
     .admin-card {
       background: white;
       padding: 20px;
       margin-bottom: 20px;
       border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
     }
 
     .admin-stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
       gap: 12px;
       margin-top: 15px;
     }
@@ -54,29 +60,29 @@
       overflow-wrap: anywhere;
     }
 
-    .listing p {
-      margin: 8px 0;
-    }
+    .listing p { margin: 8px 0; }
 
-    .approve, .reject {
-      border: none;
+    button {
       padding: 11px 16px;
+      border: none;
       border-radius: 6px;
-      color: white;
       cursor: pointer;
-      margin: 8px 5px 0 0;
     }
 
     .approve {
       background: #168b50;
+      color: white;
+      margin: 8px 5px 0 0;
     }
 
     .reject {
       background: #d93636;
+      color: white;
+      margin: 8px 5px 0 0;
     }
 
     button:disabled {
-      opacity: 0.5;
+      opacity: .5;
       cursor: not-allowed;
     }
 
@@ -96,9 +102,7 @@
       overflow-wrap: anywhere;
     }
 
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none; }
   </style>
 </head>
 
@@ -110,7 +114,7 @@
   <button id="logoutBtn" type="button">Logout</button>
 </nav>
 
-<header style="padding:20px;">
+<header>
   <h2>TaskPayout Admin</h2>
   <p>Administrator Dashboard</p>
   <p id="adminEmail"></p>
@@ -126,7 +130,6 @@
       <h3>Dashboard Overview</h3>
 
       <div class="admin-stats">
-
         <div class="admin-stat">
           <p>Total Listings</p>
           <h2 id="totalListings">0</h2>
@@ -146,7 +149,6 @@
           <p>Rejected Listings</p>
           <h2 id="rejectedListings">0</h2>
         </div>
-
       </div>
     </div>
 
@@ -157,7 +159,6 @@
     </div>
 
   </section>
-
 </main>
 
 <script>
@@ -205,9 +206,8 @@
         .maybeSingle();
 
     if (adminError) {
-      showMessage(
-        "Could not verify admin access: " + adminError.message
-      );
+      showMessage("Could not verify admin access: " +
+        adminError.message);
       return;
     }
 
@@ -278,13 +278,9 @@
         card.appendChild(p);
       }
 
-      addDetail("Email address", listing.email_address);
-      addDetail("Provider", listing.email_provider);
-      addDetail("Description", listing.description);
-      addDetail(
-        "Asking price",
-        "₦" + Number(listing.asking_price).toLocaleString()
-      );
+      addDetail("Listing details", listing.description);
+      addDetail("Submitted item", listing.email_address);
+      addDetail("Category", listing.email_provider);
       addDetail("User ID", listing.user_id);
 
       const status = document.createElement("p");
@@ -295,7 +291,7 @@
       if (listing.status === "pending") {
         const approveBtn = document.createElement("button");
         approveBtn.className = "approve";
-        approveBtn.textContent = "Approve";
+        approveBtn.textContent = "Accept";
 
         approveBtn.addEventListener("click", () => {
           updateListing(listing.id, "approved", approveBtn);
@@ -318,29 +314,74 @@
   }
 
   async function updateListing(id, newStatus, button) {
+    let amount = null;
+
+    if (newStatus === "approved") {
+      const entered = prompt(
+        "Enter reward amount (₦100 - ₦500):"
+      );
+
+      if (entered === null) return;
+
+      amount = Number(entered);
+
+      if (
+        !Number.isInteger(amount) ||
+        amount < 100 ||
+        amount > 500
+      ) {
+        alert("Enter a whole amount between ₦100 and ₦500.");
+        return;
+      }
+    }
+
     const confirmed = confirm(
-      "Are you sure you want to " + newStatus + " this listing?"
+      newStatus === "approved"
+        ? "Accept this listing and credit ₦" + amount + "?"
+        : "Are you sure you want to reject this listing?"
     );
 
     if (!confirmed) return;
 
+    const oldText = button.textContent;
     button.disabled = true;
     button.textContent = "Please wait...";
 
-    const { error } = await supabaseClient
-      .from("email_listings")
-      .update({ status: newStatus })
-      .eq("id", id);
+    let error = null;
+
+    if (newStatus === "approved") {
+      const result = await supabaseClient.rpc(
+        "approve_listing_and_credit",
+        {
+          p_listing_id: id,
+          p_amount: amount
+        }
+      );
+
+      error = result.error;
+    } else {
+      const result = await supabaseClient
+        .from("email_listings")
+        .update({ status: "rejected" })
+        .eq("id", id)
+        .eq("status", "pending");
+
+      error = result.error;
+    }
 
     if (error) {
-      alert("Update failed: " + error.message);
+      alert("Operation failed: " + error.message);
       button.disabled = false;
-      button.textContent =
-        newStatus === "approved" ? "Approve" : "Reject";
+      button.textContent = oldText;
       return;
     }
 
-    alert("Listing " + newStatus + " successfully.");
+    alert(
+      newStatus === "approved"
+        ? "Listing accepted and ₦" + amount + " credited."
+        : "Listing rejected successfully."
+    );
+
     await loadListings();
   }
 
@@ -363,4 +404,5 @@
 </script>
 
 </body>
-</html>
+  </html>
+  
