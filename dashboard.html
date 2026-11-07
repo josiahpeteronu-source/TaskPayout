@@ -5,7 +5,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#171d50">
-
 <title>My Dashboard - TaskPayout</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -26,20 +25,58 @@ body {
 .navbar {
   background: #171d50;
   color: white;
-  padding: 17px 20px;
+  padding: 16px 20px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  position: relative;
 }
 
 .navbar h2 {
   font-size: 21px;
 }
 
-.navbar a {
+.menu-button {
+  background: transparent;
   color: white;
-  text-decoration: none;
-  font-size: 14px;
+  border: none;
+  font-size: 28px;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.dropdown {
+  display: none;
+  position: absolute;
+  right: 15px;
+  top: 60px;
+  background: white;
+  width: 190px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px #0002;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.dropdown.show {
+  display: block;
+}
+
+.dropdown button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: white;
+  color: #171d50;
+  border: none;
+  padding: 15px;
+  margin: 0;
+  border-radius: 0;
+}
+
+.dropdown button:hover {
+  background: #f0efff;
 }
 
 .container {
@@ -63,10 +100,6 @@ body {
   padding: 25px;
   border-radius: 14px;
   margin-bottom: 20px;
-}
-
-.wallet p {
-  font-size: 14px;
 }
 
 .wallet h1 {
@@ -104,6 +137,7 @@ body {
   border-radius: 12px;
   margin-bottom: 20px;
   box-shadow: 0 2px 8px #0000000a;
+  scroll-margin-top: 20px;
 }
 
 .section h3 {
@@ -117,14 +151,14 @@ label {
   margin: 13px 0 7px;
 }
 
-input,
-textarea {
+input, select, textarea {
   width: 100%;
   padding: 13px;
   border: 1px solid #ddd;
   border-radius: 8px;
   outline: none;
   font-size: 15px;
+  background: white;
 }
 
 textarea {
@@ -132,12 +166,11 @@ textarea {
   min-height: 90px;
 }
 
-input:focus,
-textarea:focus {
+input:focus, select:focus, textarea:focus {
   border-color: #5545e8;
 }
 
-button {
+button.action {
   background: #5545e8;
   color: white;
   border: none;
@@ -158,6 +191,7 @@ button:disabled {
   padding: 15px;
   border-radius: 9px;
   margin-top: 12px;
+  overflow-wrap: anywhere;
 }
 
 .listing h4 {
@@ -191,16 +225,19 @@ button:disabled {
   overflow-wrap: anywhere;
 }
 
-.menu {
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
+.withdrawal-item {
+  border: 1px solid #eee;
+  padding: 15px;
+  border-radius: 9px;
+  margin-top: 12px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
 }
 
-.menu a {
-  color: #5545e8;
-  text-decoration: none;
-  font-weight: 600;
+.small-note {
+  color: #666;
+  font-size: 13px;
+  margin-top: 10px;
 }
 
 @media(max-width: 550px) {
@@ -219,7 +256,19 @@ button:disabled {
 
 <nav class="navbar">
   <h2>TaskPayout</h2>
-  <a href="#" id="logoutBtn">Logout</a>
+
+  <button
+    class="menu-button"
+    id="menuButton"
+    aria-label="Open menu"
+    aria-expanded="false"
+  >☰</button>
+
+  <div class="dropdown" id="dropdownMenu">
+    <button type="button" id="withdrawMenu">Withdraw</button>
+    <button type="button" id="supportMenu">Support</button>
+    <button type="button" id="logoutBtn">Logout</button>
+  </div>
 </nav>
 
 <div class="container">
@@ -231,12 +280,11 @@ button:disabled {
 
   <div class="wallet">
     <p>My Wallet Balance</p>
-    <h1>₦0.00</h1>
-    <p>Your approved rewards will appear here when wallet integration is completed.</p>
+    <h1 id="walletBalance">₦0.00</h1>
+    <p>Your available wallet balance.</p>
   </div>
 
   <div class="stats">
-
     <div class="stat">
       <h2 id="totalCount">0</h2>
       <p>Total Submissions</p>
@@ -251,17 +299,16 @@ button:disabled {
       <h2 id="pendingCount">0</h2>
       <p>Pending</p>
     </div>
-
   </div>
 
-  <div class="section">
+  <!-- PRODUCT SUBMISSION -->
 
+  <div class="section" id="submissionSection">
     <h3>Submit a Product or Service</h3>
 
     <form id="listingForm">
 
       <label for="productName">Product or Service Name</label>
-
       <input
         type="text"
         id="productName"
@@ -271,7 +318,6 @@ button:disabled {
       >
 
       <label for="category">Category</label>
-
       <input
         type="text"
         id="category"
@@ -281,73 +327,143 @@ button:disabled {
       >
 
       <label for="description">Description (Optional)</label>
-
       <textarea
         id="description"
         maxlength="1000"
         placeholder="Describe your product or service"
       ></textarea>
 
-      <button type="submit" id="submitBtn">
+      <button class="action" type="submit" id="submitBtn">
         Submit for Review
       </button>
 
       <p id="formMessage" class="message"></p>
+    </form>
+
+    <p class="small-note">
+      Only submit products and services you own or are authorized to offer.
+      Never submit passwords or login credentials.
+    </p>
+  </div>
+
+  <!-- SUBMISSION HISTORY -->
+
+  <div class="section">
+    <h3>My Submission History</h3>
+    <div id="listingHistory">Loading submissions...</div>
+  </div>
+
+  <!-- WITHDRAWAL FORM -->
+
+  <div class="section" id="withdrawSection">
+    <h3>Withdraw Funds</h3>
+
+    <p>Available balance: <strong id="withdrawBalance">₦0.00</strong></p>
+
+    <form id="withdrawForm">
+
+      <label for="bankName">Payment Method / Bank</label>
+      <select id="bankName" required>
+        <option value="">Select your bank or payment method</option>
+        <option>Access Bank</option>
+        <option>Access Bank (Diamond)</option>
+        <option>Citibank Nigeria</option>
+        <option>Ecobank Nigeria</option>
+        <option>Fidelity Bank</option>
+        <option>First Bank of Nigeria</option>
+        <option>First City Monument Bank (FCMB)</option>
+        <option>Globus Bank</option>
+        <option>Guaranty Trust Bank (GTBank)</option>
+        <option>Heritage Bank</option>
+        <option>Jaiz Bank</option>
+        <option>Keystone Bank</option>
+        <option>Lotus Bank</option>
+        <option>Moniepoint MFB</option>
+        <option>Opay</option>
+        <option>Palmpay</option>
+        <option>Polaris Bank</option>
+        <option>PremiumTrust Bank</option>
+        <option>Providus Bank</option>
+        <option>Stanbic IBTC Bank</option>
+        <option>Standard Chartered Bank</option>
+        <option>Sterling Bank</option>
+        <option>SunTrust Bank</option>
+        <option>TAJBank</option>
+        <option>Titan Trust Bank</option>
+        <option>Union Bank</option>
+        <option>United Bank for Africa (UBA)</option>
+        <option>Unity Bank</option>
+        <option>Wema Bank</option>
+        <option>Zenith Bank</option>
+        <option>Kuda Bank</option>
+        <option>Other</option>
+      </select>
+
+      <label for="accountNumber">Account Number</label>
+      <input
+        type="text"
+        id="accountNumber"
+        inputmode="numeric"
+        maxlength="10"
+        minlength="10"
+        pattern="[0-9]{10}"
+        placeholder="Enter 10-digit account number"
+        required
+      >
+
+      <label for="accountName">Account Name</label>
+      <input
+        type="text"
+        id="accountName"
+        maxlength="120"
+        placeholder="Enter account holder's name"
+        required
+      >
+
+      <label for="withdrawAmount">Withdrawal Amount (₦)</label>
+      <input
+        type="number"
+        id="withdrawAmount"
+        min="1"
+        step="1"
+        placeholder="Enter amount to withdraw"
+        required
+      >
+
+      <button class="action" type="submit" id="withdrawBtn">
+        Withdraw
+      </button>
+
+      <p id="withdrawMessage" class="message"></p>
 
     </form>
 
-    <p class="message">
-      Only submit products and services you own or are authorized to offer.
-      Never submit passwords, login credentials, or another person's account.
+    <p class="small-note">
+      Your withdrawal amount will be deducted from your available balance
+      immediately after a successful request. Pending requests are reviewed
+      by the administrator. Rejected requests are refunded.
     </p>
 
+    <h3 style="margin-top:25px;">My Withdrawal History</h3>
+
+    <div id="withdrawalHistory">Loading withdrawals...</div>
   </div>
 
-  <div class="section">
+  <!-- SUPPORT -->
 
-    <h3>My Submission History</h3>
-
-    <div id="listingHistory">
-      Loading submissions...
-    </div>
-
-  </div>
-
-  <div class="section">
-
-    <h3>Withdraw Funds</h3>
-
-    <p>
-      Withdrawal requests will be connected after secure wallet integration is completed.
-    </p>
-
-  </div>
-
-  <div class="section">
-
+  <div class="section" id="supportSection">
     <h3>Account Support</h3>
-
-    <p>
-      Contact support if you need help with your account or submissions.
-    </p>
-
-  </div>
-
-  <div class="section menu">
-
-    <a href="index.html">Home</a>
-    <a href="admin.html">Admin Panel</a>
-    <a href="login.html">Login</a>
-
+    <p>Support will be set up here. We will work on this section separately.</p>
   </div>
 
 </div>
 
 <script>
+const SUPABASE_URL =
+  "https://czimlirfmlsiybuqllsf.supabase.co";
 
-const SUPABASE_URL = "https://czimlirfmlsiybuqllsf.supabase.co";
-
-const SUPABASE_KEY = "sb_publishable_2rDw4HNQME_r9IK1c7l1tg_1JOnxoBE";
+const SUPABASE_KEY =
+  "sb_publishable_2rDw4HNQME_r9IK1c7l1tg_1JOnxoBE";
 
 const db = window.supabase.createClient(
   SUPABASE_URL,
@@ -356,15 +472,49 @@ const db = window.supabase.createClient(
 
 let currentUser = null;
 
+function money(amount) {
+  return Number(amount || 0).toLocaleString("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    minimumFractionDigits: 2
+  });
+}
 
-// CHECK LOGIN
+
+// MENU
+
+const menuButton = document.getElementById("menuButton");
+const dropdownMenu = document.getElementById("dropdownMenu");
+
+menuButton.addEventListener("click", function() {
+  const isOpen = dropdownMenu.classList.toggle("show");
+  menuButton.setAttribute("aria-expanded", isOpen);
+});
+
+document.getElementById("withdrawMenu")
+.addEventListener("click", function() {
+  dropdownMenu.classList.remove("show");
+  menuButton.setAttribute("aria-expanded", "false");
+  document.getElementById("withdrawSection")
+    .scrollIntoView({ behavior: "smooth" });
+});
+
+document.getElementById("supportMenu")
+.addEventListener("click", function() {
+  dropdownMenu.classList.remove("show");
+  menuButton.setAttribute("aria-expanded", "false");
+  document.getElementById("supportSection")
+    .scrollIntoView({ behavior: "smooth" });
+});
+
+
+// LOGIN CHECK
 
 async function checkLogin() {
-
   const { data, error } = await db.auth.getUser();
 
   if (error || !data.user) {
-    window.location.href = "login.html";
+    window.location.replace("login.html");
     return;
   }
 
@@ -373,18 +523,47 @@ async function checkLogin() {
   document.getElementById("welcomeMessage").textContent =
     "Welcome, " + (currentUser.email || "User") + "!";
 
-  await loadListings();
-
+  await Promise.all([
+    loadWallet(),
+    loadListings(),
+    loadWithdrawals()
+  ]);
 }
 
 
-// LOAD USER SUBMISSIONS
+// LOAD REAL WALLET BALANCE
+
+async function loadWallet() {
+  const { data, error } = await db
+    .from("user_wallets")
+    .select("balance")
+    .eq("user_id", currentUser.id)
+    .maybeSingle();
+
+  if (error) {
+    document.getElementById("walletBalance").textContent =
+      "Unable to load";
+    document.getElementById("withdrawBalance").textContent =
+      "Unable to load";
+    return;
+  }
+
+  const balance = data ? Number(data.balance) : 0;
+
+  document.getElementById("walletBalance").textContent =
+    money(balance);
+
+  document.getElementById("withdrawBalance").textContent =
+    money(balance);
+
+  document.getElementById("withdrawAmount").max = balance;
+}
+
+
+// LOAD PRODUCT SUBMISSIONS
 
 async function loadListings() {
-
   const history = document.getElementById("listingHistory");
-
-  history.textContent = "Loading submissions...";
 
   const { data, error } = await db
     .from("product_listings")
@@ -393,10 +572,7 @@ async function loadListings() {
     .order("created_at", { ascending: false });
 
   if (error) {
-
-    history.textContent =
-      "Could not load submissions: " + error.message;
-
+    history.textContent = "Could not load submissions: " + error.message;
     return;
   }
 
@@ -414,51 +590,31 @@ async function loadListings() {
   history.replaceChildren();
 
   if (listings.length === 0) {
-
-    history.textContent =
-      "You have not submitted anything yet.";
-
+    history.textContent = "You have not submitted anything yet.";
     return;
   }
 
   listings.forEach(item => {
-
     const card = document.createElement("div");
-
     card.className = "listing";
 
     const title = document.createElement("h4");
-
     title.textContent = item.product_name;
 
     const category = document.createElement("p");
-
-    category.textContent =
-      "Category: " + item.category;
+    category.textContent = "Category: " + item.category;
 
     const description = document.createElement("p");
-
     description.textContent =
       item.description || "No description provided.";
 
     const status = document.createElement("span");
-
     status.className = "status " + item.status;
+    status.textContent = item.status.toUpperCase();
 
-    status.textContent =
-      item.status.toUpperCase();
-
-    card.append(
-      title,
-      category,
-      description,
-      status
-    );
-
+    card.append(title, category, description, status);
     history.appendChild(card);
-
   });
-
 }
 
 
@@ -466,99 +622,173 @@ async function loadListings() {
 
 document.getElementById("listingForm")
 .addEventListener("submit", async function(event) {
-
   event.preventDefault();
 
   if (!currentUser) return;
 
   const button = document.getElementById("submitBtn");
-
   const message = document.getElementById("formMessage");
 
   button.disabled = true;
-
   button.textContent = "Submitting...";
-
   message.textContent = "";
 
-  const productName =
-    document.getElementById("productName").value.trim();
-
-  const category =
-    document.getElementById("category").value.trim();
-
-  const description =
-    document.getElementById("description").value.trim();
-
   try {
-
     const { error } = await db
       .from("product_listings")
       .insert({
-
         user_id: currentUser.id,
-
-        product_name: productName,
-
-        category: category,
-
-        description: description || null
-
+        product_name: document.getElementById("productName").value.trim(),
+        category: document.getElementById("category").value.trim(),
+        description:
+          document.getElementById("description").value.trim() || null
       });
 
     if (error) throw error;
 
     message.style.color = "green";
-
-    message.textContent =
-      "Your submission has been sent for review!";
+    message.textContent = "Your submission has been sent for review!";
 
     this.reset();
-
     await loadListings();
 
   } catch (error) {
-
     message.style.color = "red";
-
-    message.textContent =
-      "Submission failed: " + error.message;
-
+    message.textContent = "Submission failed: " + error.message;
   }
 
   button.disabled = false;
-
   button.textContent = "Submit for Review";
-
 });
+
+
+// SUBMIT WITHDRAWAL
+
+document.getElementById("withdrawForm")
+.addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  if (!currentUser) return;
+
+  const button = document.getElementById("withdrawBtn");
+  const message = document.getElementById("withdrawMessage");
+
+  const bankName = document.getElementById("bankName").value;
+  const accountNumber =
+    document.getElementById("accountNumber").value.trim();
+  const accountName =
+    document.getElementById("accountName").value.trim();
+  const amount =
+    Number(document.getElementById("withdrawAmount").value);
+
+  if (!Number.isInteger(amount) || amount <= 0) {
+    message.style.color = "red";
+    message.textContent = "Enter a valid whole-number withdrawal amount.";
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Processing...";
+  message.textContent = "";
+
+  try {
+    const { data, error } = await db.rpc("request_withdrawal", {
+      p_bank_name: bankName,
+      p_account_number: accountNumber,
+      p_account_name: accountName,
+      p_amount: amount
+    });
+
+    if (error) throw error;
+
+    message.style.color = "green";
+    message.textContent =
+      "Withdrawal request submitted successfully. Your request is Pending. Reference: " + data;
+
+    this.reset();
+
+    await Promise.all([
+      loadWallet(),
+      loadWithdrawals()
+    ]);
+
+  } catch (error) {
+    message.style.color = "red";
+    message.textContent = error.message;
+  }
+
+  button.disabled = false;
+  button.textContent = "Withdraw";
+});
+
+
+// LOAD USER WITHDRAWAL HISTORY
+
+async function loadWithdrawals() {
+  const history = document.getElementById("withdrawalHistory");
+
+  const { data, error } = await db
+    .from("withdrawal_requests")
+    .select("id, bank_name, account_number, account_name, amount, status, created_at")
+    .eq("user_id", currentUser.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    history.textContent =
+      "Could not load withdrawals: " + error.message;
+    return;
+  }
+
+  history.replaceChildren();
+
+  if (!data || data.length === 0) {
+    history.textContent = "You have not made a withdrawal request yet.";
+    return;
+  }
+
+  data.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "withdrawal-item";
+
+    const details = document.createElement("p");
+    details.textContent =
+      "Bank: " + item.bank_name +
+      " | Account: " + item.account_number +
+      " | Name: " + item.account_name +
+      " | Amount: " + money(item.amount);
+
+    const status = document.createElement("span");
+    status.className = "status " + item.status;
+    status.textContent = item.status.toUpperCase();
+
+    const date = document.createElement("p");
+    date.className = "small-note";
+    date.textContent =
+      "Submitted: " + new Date(item.created_at).toLocaleString();
+
+    card.append(details, status, date);
+    history.appendChild(card);
+  });
+}
 
 
 // LOGOUT
 
 document.getElementById("logoutBtn")
-.addEventListener("click", async function(event) {
-
-  event.preventDefault();
-
+.addEventListener("click", async function() {
+  this.disabled = true;
   this.textContent = "Logging out...";
-
-  this.style.pointerEvents = "none";
 
   const { error } = await db.auth.signOut();
 
   if (error) {
-
     alert("Could not log out: " + error.message);
-
+    this.disabled = false;
     this.textContent = "Logout";
-
-    this.style.pointerEvents = "auto";
-
     return;
   }
 
   window.location.replace("login.html");
-
 });
 
 
