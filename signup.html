@@ -24,24 +24,33 @@
     <form id="signupForm">
 
       <input type="text" name="fullname"
-        placeholder="Full Name" autocomplete="name" required>
+        placeholder="Full Name"
+        autocomplete="name" required>
 
       <input type="text" name="username"
         placeholder="Choose a Username"
-        autocomplete="username" minlength="3" required>
+        autocomplete="username"
+        minlength="3" required>
 
       <input type="email" name="email"
-        placeholder="Email Address" autocomplete="email" required>
+        placeholder="Email Address"
+        autocomplete="email" required>
 
       <input type="password" name="password"
-        placeholder="Create Password" minlength="8"
+        placeholder="Create Password"
+        minlength="8"
         autocomplete="new-password" required>
 
       <input type="password" name="confirmPassword"
-        placeholder="Confirm Password" minlength="8"
+        placeholder="Confirm Password"
+        minlength="8"
         autocomplete="new-password" required>
 
-      <button type="submit">Sign Up</button>
+      <button type="submit" id="signupButton">
+        Sign Up
+      </button>
+
+      <p id="message" role="status"></p>
 
     </form>
 
@@ -56,22 +65,99 @@
 
   </div>
 
+  <!-- Supabase library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script>
-    document.getElementById("signupForm")
-      .addEventListener("submit", function(event) {
+    // Supabase connection
+    const SUPABASE_URL =
+      "https://czimlirfmlsiybuqllsf.supabase.co";
 
-        event.preventDefault();
+    const SUPABASE_KEY =
+      "sb_publishable_2rDw4HNQME_r9IK1c7l1tg_1JOnxoBE";
 
-        const password = this.elements.password.value;
-        const confirmPassword = this.elements.confirmPassword.value;
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
 
-        if (password !== confirmPassword) {
-          alert("Passwords do not match!");
-          return;
+    // Signup form
+    const signupForm = document.getElementById("signupForm");
+    const signupButton = document.getElementById("signupButton");
+    const message = document.getElementById("message");
+
+    signupForm.addEventListener("submit", async function(event) {
+
+      event.preventDefault();
+
+      const fullname = this.elements.fullname.value.trim();
+      const username = this.elements.username.value.trim();
+      const email = this.elements.email.value.trim();
+      const password = this.elements.password.value;
+      const confirmPassword = this.elements.confirmPassword.value;
+
+      message.textContent = "";
+      message.style.color = "red";
+
+      // Check passwords
+      if (password !== confirmPassword) {
+        message.textContent = "Passwords do not match!";
+        return;
+      }
+
+      signupButton.disabled = true;
+      signupButton.textContent = "Creating Account...";
+
+      try {
+
+        const { data, error } = await supabaseClient.auth.signUp({
+
+          email: email,
+          password: password,
+
+          options: {
+            data: {
+              full_name: fullname,
+              username: username
+            }
+          }
+
+        });
+
+        if (error) {
+          throw error;
         }
 
-        alert("Registration will be available when the secure account system is connected.");
-      });
+        if (data.session) {
+
+          message.style.color = "green";
+          message.textContent = "Account created successfully!";
+
+          setTimeout(function() {
+            window.location.href = "dashboard.html";
+          }, 1500);
+
+        } else {
+
+          message.style.color = "green";
+          message.textContent =
+            "Registration successful! Please check your email to confirm your account before logging in.";
+
+          signupButton.disabled = false;
+          signupButton.textContent = "Sign Up";
+        }
+
+      } catch (error) {
+
+        message.style.color = "red";
+        message.textContent = error.message;
+
+        signupButton.disabled = false;
+        signupButton.textContent = "Sign Up";
+
+      }
+
+    });
   </script>
 
 </body>
