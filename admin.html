@@ -36,7 +36,7 @@
 
     .admin-stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
+      grid-template-columns: repeat(auto-fit,minmax(130px,1fr));
       gap: 12px;
       margin-top: 15px;
     }
@@ -67,18 +67,22 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
+      margin: 5px 5px 0 0;
     }
 
     .approve {
       background: #168b50;
       color: white;
-      margin: 8px 5px 0 0;
     }
 
     .reject {
       background: #d93636;
       color: white;
-      margin: 8px 5px 0 0;
+    }
+
+    .refresh {
+      background: #5545e8;
+      color: white;
     }
 
     button:disabled {
@@ -103,6 +107,18 @@
     }
 
     .hidden { display: none; }
+
+    .warning {
+      background: #fff3cd;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    .section-title {
+      margin-top: 0;
+    }
   </style>
 </head>
 
@@ -127,35 +143,65 @@
   <section id="adminContent" class="hidden">
 
     <div class="admin-card">
-      <h3>Dashboard Overview</h3>
+      <h3 class="section-title">Dashboard Overview</h3>
 
       <div class="admin-stats">
+
         <div class="admin-stat">
-          <p>Total Listings</p>
-          <h2 id="totalListings">0</h2>
+          <p>Total Products</p>
+          <h2 id="totalProducts">0</h2>
         </div>
 
         <div class="admin-stat">
-          <p>Pending Listings</p>
-          <h2 id="pendingListings">0</h2>
+          <p>Pending Products</p>
+          <h2 id="pendingProducts">0</h2>
         </div>
 
         <div class="admin-stat">
-          <p>Approved Listings</p>
-          <h2 id="approvedListings">0</h2>
+          <p>Approved Products</p>
+          <h2 id="approvedProducts">0</h2>
         </div>
 
         <div class="admin-stat">
-          <p>Rejected Listings</p>
-          <h2 id="rejectedListings">0</h2>
+          <p>Rejected Products</p>
+          <h2 id="rejectedProducts">0</h2>
         </div>
+
+        <div class="admin-stat">
+          <p>Pending Withdrawals</p>
+          <h2 id="pendingWithdrawals">0</h2>
+        </div>
+
       </div>
     </div>
 
     <div class="admin-card">
-      <h3>All User Submissions</h3>
-      <button type="button" id="refreshBtn">Refresh Listings</button>
-      <div id="listingsContainer">Loading listings...</div>
+      <h3 class="section-title">Product Submissions</h3>
+
+      <button class="refresh" id="refreshProducts" type="button">
+        Refresh Products
+      </button>
+
+      <div id="productsContainer">Loading products...</div>
+    </div>
+
+    <div class="admin-card">
+      <h3 class="section-title">User Withdrawal Requests</h3>
+
+      <div class="warning">
+        <strong>Important:</strong> Send the money manually using
+        your bank or payment app first. Only click Approve after
+        the transfer is successful. Rejecting a request refunds
+        the reserved amount to the user's wallet.
+      </div>
+
+      <button class="refresh" id="refreshWithdrawals" type="button">
+        Refresh Withdrawals
+      </button>
+
+      <div id="withdrawalsContainer">
+        Loading withdrawal requests...
+      </div>
     </div>
 
   </section>
@@ -175,13 +221,31 @@
 
   const message = document.getElementById("message");
   const adminContent = document.getElementById("adminContent");
-  const listingsContainer =
-    document.getElementById("listingsContainer");
+  const productsContainer =
+    document.getElementById("productsContainer");
+  const withdrawalsContainer =
+    document.getElementById("withdrawalsContainer");
 
   let currentUser = null;
 
   function showMessage(text) {
     message.textContent = text;
+  }
+
+  function addDetail(card, label, value) {
+    const p = document.createElement("p");
+    p.textContent = label + ": " +
+      (value === null || value === undefined || value === ""
+        ? "Not provided"
+        : value);
+    card.appendChild(p);
+  }
+
+  function naira(amount) {
+    return "₦" + Number(amount).toLocaleString("en-NG", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
   }
 
   async function checkAdmin() {
@@ -206,8 +270,9 @@
         .maybeSingle();
 
     if (adminError) {
-      showMessage("Could not verify admin access: " +
-        adminError.message);
+      showMessage(
+        "Could not verify admin access: " + adminError.message
+      );
       return;
     }
 
@@ -222,79 +287,76 @@
     adminContent.classList.remove("hidden");
 
     await loadListings();
+    await loadWithdrawals();
   }
 
   async function loadListings() {
-    listingsContainer.textContent = "Loading listings...";
+    productsContainer.textContent = "Loading products...";
 
     const { data, error } = await supabaseClient
-      .from("email_listings")
+      .from("product_listings")
       .select(
-        "id, user_id, email_address, email_provider, description, asking_price, status, created_at"
+        "id, user_id, product_name, category, description, status, created_at"
       )
       .order("created_at", { ascending: false });
 
     if (error) {
-      listingsContainer.textContent =
-        "Could not load listings: " + error.message;
+      productsContainer.textContent =
+        "Could not load products: " + error.message;
       return;
     }
 
-    const listings = data || [];
+    const products = data || [];
 
-    document.getElementById("totalListings").textContent =
-      listings.length;
+    document.getElementById("totalProducts").textContent =
+      products.length;
 
-    document.getElementById("pendingListings").textContent =
-      listings.filter(x => x.status === "pending").length;
+    document.getElementById("pendingProducts").textContent =
+      products.filter(x => x.status === "pending").length;
 
-    document.getElementById("approvedListings").textContent =
-      listings.filter(x => x.status === "approved").length;
+    document.getElementById("approvedProducts").textContent =
+      products.filter(x => x.status === "approved").length;
 
-    document.getElementById("rejectedListings").textContent =
-      listings.filter(x => x.status === "rejected").length;
+    document.getElementById("rejectedProducts").textContent =
+      products.filter(x => x.status === "rejected").length;
 
-    listingsContainer.replaceChildren();
+    productsContainer.replaceChildren();
 
-    if (listings.length === 0) {
-      listingsContainer.textContent = "No listings submitted yet.";
+    if (products.length === 0) {
+      productsContainer.textContent = "No product submissions yet.";
       return;
     }
 
-    listings.forEach(listing => {
+    products.forEach(product => {
       const card = document.createElement("div");
       card.className = "listing";
 
       const heading = document.createElement("h3");
-      heading.textContent = "Listing #" + listing.id;
+      heading.textContent = "Product #" + product.id;
       card.appendChild(heading);
 
-      function addDetail(label, value) {
-        const p = document.createElement("p");
-        p.textContent = label + ": " +
-          (value === null || value === undefined || value === ""
-            ? "Not provided"
-            : value);
-        card.appendChild(p);
-      }
-
-      addDetail("Listing details", listing.description);
-      addDetail("Submitted item", listing.email_address);
-      addDetail("Category", listing.email_provider);
-      addDetail("User ID", listing.user_id);
+      addDetail(card, "Product name", product.product_name);
+      addDetail(card, "Category", product.category);
+      addDetail(card, "Description", product.description);
+      addDetail(card, "User ID", product.user_id);
+      addDetail(
+        card,
+        "Submitted",
+        new Date(product.created_at).toLocaleString()
+      );
 
       const status = document.createElement("p");
       status.className = "status";
-      status.textContent = "Status: " + listing.status;
+      status.textContent = "Status: " + product.status;
       card.appendChild(status);
 
-      if (listing.status === "pending") {
+      if (product.status === "pending") {
         const approveBtn = document.createElement("button");
         approveBtn.className = "approve";
         approveBtn.textContent = "Accept";
 
         approveBtn.addEventListener("click", () => {
-          updateListing(listing.id, "approved", approveBtn);
+          updateProduct(product.id, "approved", approveBtn);
         });
 
         const rejectBtn = document.createElement("button");
@@ -302,72 +364,174 @@
         rejectBtn.textContent = "Reject";
 
         rejectBtn.addEventListener("click", () => {
-          updateListing(listing.id, "rejected", rejectBtn);
+          updateProduct(product.id, "rejected", rejectBtn);
         });
 
         card.appendChild(approveBtn);
         card.appendChild(rejectBtn);
       }
 
-      listingsContainer.appendChild(card);
+      productsContainer.appendChild(card);
     });
   }
 
-  async function updateListing(id, newStatus, button) {
-    let amount = null;
-
-    if (newStatus === "approved") {
-      const entered = prompt(
-        "Enter reward amount (₦100 - ₦500):"
-      );
-
-      if (entered === null) return;
-
-      amount = Number(entered);
-
-      if (
-        !Number.isInteger(amount) ||
-        amount < 100 ||
-        amount > 500
-      ) {
-        alert("Enter a whole amount between ₦100 and ₦500.");
-        return;
-      }
-    }
-
+  async function updateProduct(id, newStatus, button) {
     const confirmed = confirm(
       newStatus === "approved"
-        ? "Accept this listing and credit ₦" + amount + "?"
-        : "Are you sure you want to reject this listing?"
+        ? "Accept this product submission?"
+        : "Reject this product submission?"
     );
+
+    if (!confirmed) return;
+
+    button.disabled = true;
+    button.textContent = "Please wait...";
+
+    const { data, error } = await supabaseClient
+      .from("product_listings")
+      .update({ status: newStatus })
+      .eq("id", id)
+      .eq("status", "pending")
+      .select("id");
+
+    if (error || !data || data.length === 0) {
+      alert(
+        "Operation failed: " +
+        (error ? error.message : "This submission may already be processed.")
+      );
+      button.disabled = false;
+      button.textContent = newStatus === "approved" ? "Accept" : "Reject";
+      return;
+    }
+
+    alert(
+      newStatus === "approved"
+        ? "Product submission approved."
+        : "Product submission rejected."
+    );
+
+    await loadListings();
+  }
+
+  async function loadWithdrawals() {
+    withdrawalsContainer.textContent =
+      "Loading withdrawal requests...";
+
+    const { data, error } = await supabaseClient
+      .from("withdrawal_requests")
+      .select(
+        "id, user_id, user_name, user_email, bank_name, account_number, account_name, amount, status, created_at"
+      )
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      withdrawalsContainer.textContent =
+        "Could not load withdrawals: " + error.message;
+      return;
+    }
+
+    const withdrawals = data || [];
+
+    document.getElementById("pendingWithdrawals").textContent =
+      withdrawals.filter(x => x.status === "pending").length;
+
+    withdrawalsContainer.replaceChildren();
+
+    if (withdrawals.length === 0) {
+      withdrawalsContainer.textContent =
+        "No withdrawal requests yet.";
+      return;
+    }
+
+    withdrawals.forEach(request => {
+      const card = document.createElement("div");
+      card.className = "listing";
+
+      const heading = document.createElement("h3");
+      heading.textContent = "Withdrawal #" + request.id;
+      card.appendChild(heading);
+
+      addDetail(card, "User name", request.user_name);
+      addDetail(card, "User email", request.user_email);
+      addDetail(card, "User ID", request.user_id);
+      addDetail(card, "Payment method / Bank", request.bank_name);
+      addDetail(card, "Account number", request.account_number);
+      addDetail(card, "Account name", request.account_name);
+      addDetail(card, "Amount", naira(request.amount));
+      addDetail(
+        card,
+        "Request date",
+        new Date(request.created_at).toLocaleString()
+      );
+
+      const status = document.createElement("p");
+      status.className = "status";
+      status.textContent = "Status: " + request.status;
+      card.appendChild(status);
+
+      if (request.status === "pending") {
+        const approveBtn = document.createElement("button");
+        approveBtn.className = "approve";
+        approveBtn.textContent = "Approve Payment";
+
+        approveBtn.addEventListener("click", () => {
+          processWithdrawal(
+            request.id,
+            "approved",
+            approveBtn
+          );
+        });
+
+        const rejectBtn = document.createElement("button");
+        rejectBtn.className = "reject";
+        rejectBtn.textContent = "Reject & Refund";
+
+        rejectBtn.addEventListener("click", () => {
+          processWithdrawal(
+            request.id,
+            "rejected",
+            rejectBtn
+          );
+        });
+
+        card.appendChild(approveBtn);
+        card.appendChild(rejectBtn);
+      }
+
+      withdrawalsContainer.appendChild(card);
+    });
+  }
+
+  async function processWithdrawal(id, action, button) {
+    let confirmed;
+
+    if (action === "approved") {
+      confirmed = confirm(
+        "Have you successfully sent this money to the user's account? " +
+        "Only continue if the transfer is complete."
+      );
+    } else {
+      confirmed = confirm(
+        "Reject this withdrawal? The amount will be refunded " +
+        "to the user's wallet."
+      );
+    }
 
     if (!confirmed) return;
 
     const oldText = button.textContent;
     button.disabled = true;
-    button.textContent = "Please wait...";
+    button.textContent = "Processing...";
 
-    let error = null;
+    const functionName =
+      action === "approved"
+        ? "approve_withdrawal"
+        : "reject_withdrawal";
 
-    if (newStatus === "approved") {
-      const result = await supabaseClient.rpc(
-        "approve_listing_and_credit",
-        {
-          p_listing_id: id,
-          p_amount: amount
-        }
-      );
-
-      error = result.error;
-    } else {
-      const result = await supabaseClient
-        .from("email_listings")
-        .update({ status: "rejected" })
-        .eq("id", id)
-        .eq("status", "pending");
-
-      error = result.error;
-    }
+    const { error } = await supabaseClient.rpc(
+      functionName,
+      { p_request_id: id }
+    );
 
     if (error) {
       alert("Operation failed: " + error.message);
@@ -377,16 +541,19 @@
     }
 
     alert(
-      newStatus === "approved"
-        ? "Listing accepted and ₦" + amount + " credited."
-        : "Listing rejected successfully."
+      action === "approved"
+        ? "Withdrawal marked as approved."
+        : "Withdrawal rejected. The wallet refund was processed."
     );
 
-    await loadListings();
+    await loadWithdrawals();
   }
 
-  document.getElementById("refreshBtn")
+  document.getElementById("refreshProducts")
     .addEventListener("click", loadListings);
+
+  document.getElementById("refreshWithdrawals")
+    .addEventListener("click", loadWithdrawals);
 
   document.getElementById("logoutBtn")
     .addEventListener("click", async () => {
@@ -404,5 +571,4 @@
 </script>
 
 </body>
-  </html>
-  
+</html>
