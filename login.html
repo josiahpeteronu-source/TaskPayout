@@ -27,6 +27,7 @@
       <input
         type="email"
         name="email"
+        id="email"
         placeholder="Email Address"
         autocomplete="email"
         required
@@ -39,6 +40,12 @@
         autocomplete="current-password"
         required
       >
+
+      <p style="text-align:right; margin:10px 0;">
+        <a href="#" id="forgotPassword">
+          Forgot Password?
+        </a>
+      </p>
 
       <button type="submit" id="loginButton">
         Login
@@ -55,12 +62,10 @@
 
   </div>
 
-  <!-- Supabase library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
 
-    // Supabase connection
     const SUPABASE_URL =
       "https://czimlirfmlsiybuqllsf.supabase.co";
 
@@ -72,16 +77,19 @@
       SUPABASE_KEY
     );
 
-    // Login form
     const loginForm = document.getElementById("loginForm");
     const loginButton = document.getElementById("loginButton");
     const message = document.getElementById("message");
+    const forgotPassword = document.getElementById("forgotPassword");
+    const emailInput = document.getElementById("email");
+
+    // NORMAL LOGIN
 
     loginForm.addEventListener("submit", async function(event) {
 
       event.preventDefault();
 
-      const email = this.elements.email.value.trim();
+      const email = emailInput.value.trim();
       const password = this.elements.password.value;
 
       message.textContent = "";
@@ -92,22 +100,18 @@
 
       try {
 
-        const { data, error } =
+        const { error } =
           await supabaseClient.auth.signInWithPassword({
             email: email,
             password: password
           });
 
-        if (error) {
-          throw error;
-        }
+        if (error) throw error;
 
         message.style.color = "green";
         message.textContent = "Login successful!";
 
-        setTimeout(function() {
-          window.location.href = "dashboard.html";
-        }, 1000);
+        window.location.href = "dashboard.html";
 
       } catch (error) {
 
@@ -118,6 +122,53 @@
         loginButton.textContent = "Login";
 
       }
+
+    });
+
+    // FORGOT PASSWORD
+
+    forgotPassword.addEventListener("click", async function(event) {
+
+      event.preventDefault();
+
+      const email = emailInput.value.trim();
+
+      if (!email) {
+        message.style.color = "red";
+        message.textContent =
+          "Please enter your email address first.";
+        emailInput.focus();
+        return;
+      }
+
+      forgotPassword.textContent = "Sending...";
+      forgotPassword.style.pointerEvents = "none";
+
+      message.textContent = "";
+
+      try {
+
+        const { error } =
+          await supabaseClient.auth.resetPasswordForEmail(email, {
+            redirectTo:
+              "https://taskpayout.netlify.app/reset-password.html"
+          });
+
+        if (error) throw error;
+
+        message.style.color = "green";
+        message.textContent =
+          "Password reset email sent! Check your inbox.";
+
+      } catch (error) {
+
+        message.style.color = "red";
+        message.textContent = error.message;
+
+      }
+
+      forgotPassword.textContent = "Forgot Password?";
+      forgotPassword.style.pointerEvents = "auto";
 
     });
 
