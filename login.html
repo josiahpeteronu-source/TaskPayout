@@ -40,7 +40,11 @@
         required
       >
 
-      <button type="submit">Login</button>
+      <button type="submit" id="loginButton">
+        Login
+      </button>
+
+      <p id="message" role="status"></p>
 
     </form>
 
@@ -51,13 +55,72 @@
 
   </div>
 
-  <script>
-    document.getElementById("loginForm")
-      .addEventListener("submit", function(event) {
-        event.preventDefault();
+  <!-- Supabase library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        alert("Login will work when the secure account system is connected.");
-      });
+  <script>
+
+    // Supabase connection
+    const SUPABASE_URL =
+      "https://czimlirfmlsiybuqllsf.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_2rDw4HNQME_r9IK1c7l1tg_1JOnxoBE";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    // Login form
+    const loginForm = document.getElementById("loginForm");
+    const loginButton = document.getElementById("loginButton");
+    const message = document.getElementById("message");
+
+    loginForm.addEventListener("submit", async function(event) {
+
+      event.preventDefault();
+
+      const email = this.elements.email.value.trim();
+      const password = this.elements.password.value;
+
+      message.textContent = "";
+      message.style.color = "red";
+
+      loginButton.disabled = true;
+      loginButton.textContent = "Logging in...";
+
+      try {
+
+        const { data, error } =
+          await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+          });
+
+        if (error) {
+          throw error;
+        }
+
+        message.style.color = "green";
+        message.textContent = "Login successful!";
+
+        setTimeout(function() {
+          window.location.href = "dashboard.html";
+        }, 1000);
+
+      } catch (error) {
+
+        message.style.color = "red";
+        message.textContent = error.message;
+
+        loginButton.disabled = false;
+        loginButton.textContent = "Login";
+
+      }
+
+    });
+
   </script>
 
 </body>
