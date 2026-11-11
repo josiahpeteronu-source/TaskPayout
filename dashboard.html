@@ -4,10 +4,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#171d50">
-<title>My Dashboard - TaskPayout</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta name="theme-color" content="#0b2025">
+<title>Business Shop</title>
 
 <style>
 * {
@@ -18,235 +16,281 @@
 }
 
 body {
-  background: #f4f5ff;
-  color: #222;
+  background: #f5f7f6;
+  color: #183037;
 }
 
-.navbar {
-  background: #171d50;
+header {
+  background: #0b2025;
   color: white;
-  padding: 16px 20px;
+  padding: 17px 5%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: relative;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
-.navbar h2 {
-  font-size: 21px;
+.logo {
+  font-size: 23px;
+  font-weight: 800;
+  color: #f7c52e;
 }
 
-.menu-button {
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-actions button {
   background: transparent;
   color: white;
-  border: none;
-  font-size: 28px;
-  padding: 0;
-  margin: 0;
+  border: 1px solid #ffffff55;
+  padding: 10px 14px;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-.dropdown {
-  display: none;
-  position: absolute;
-  right: 15px;
-  top: 60px;
-  background: white;
-  width: 190px;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px #0002;
-  z-index: 100;
-  overflow: hidden;
+.search-area {
+  background: #102c33;
+  padding: 18px 5%;
 }
 
-.dropdown.show {
-  display: block;
-}
-
-.dropdown button {
-  display: block;
+.search-area input {
   width: 100%;
-  text-align: left;
-  background: white;
-  color: #171d50;
-  border: none;
+  max-width: 650px;
+  display: block;
+  margin: auto;
   padding: 15px;
-  margin: 0;
-  border-radius: 0;
+  border: none;
+  border-radius: 9px;
+  font-size: 15px;
+  outline: none;
 }
 
-.dropdown button:hover {
-  background: #f0efff;
+.hero {
+  margin: 25px auto;
+  max-width: 1200px;
+  width: 90%;
+  padding: 35px 25px;
+  background: linear-gradient(120deg, #0b2025, #16434b);
+  color: white;
+  border-radius: 16px;
+}
+
+.hero h1 {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  color: #c7dedb;
+  line-height: 1.6;
+}
+
+.hero button {
+  background: #f7c52e;
+  color: #0b2025;
+  border: none;
+  border-radius: 8px;
+  padding: 13px 22px;
+  margin-top: 18px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 .container {
-  max-width: 950px;
-  margin: 25px auto;
-  padding: 15px;
+  max-width: 1200px;
+  width: 90%;
+  margin: 30px auto;
 }
 
-.welcome {
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
+  gap: 10px;
 }
 
-.welcome h2 {
-  color: #171d50;
-  margin-bottom: 6px;
+.section-heading h2 {
+  font-size: 23px;
+  color: #0b2025;
 }
 
-.wallet {
-  background: linear-gradient(135deg, #5545e8, #171d50);
-  color: white;
-  padding: 25px;
-  border-radius: 14px;
-  margin-bottom: 20px;
-}
-
-.wallet h1 {
-  margin: 12px 0;
-  font-size: 32px;
-}
-
-.stats {
+.products {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 22px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
 }
 
-.stat {
+.product {
   background: white;
-  padding: 18px 12px;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 2px 8px #0000000a;
+  border-radius: 13px;
+  overflow: hidden;
+  box-shadow: 0 3px 14px #0000000c;
+  border: 1px solid #edf0ef;
 }
 
-.stat h2 {
-  color: #5545e8;
-  margin-bottom: 5px;
+.product img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  background: #e9efed;
 }
 
-.stat p {
-  font-size: 13px;
+.product-info {
+  padding: 14px;
 }
 
-.section {
+.product h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.price {
+  color: #0d7061;
+  font-weight: 800;
+  font-size: 19px;
+  margin-bottom: 12px;
+}
+
+.product button {
+  width: 100%;
+  background: #0b2025;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.product button:hover {
+  background: #16434b;
+}
+
+.cart-section,
+.checkout-section,
+.orders-section {
   background: white;
   padding: 22px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px #0000000a;
-  scroll-margin-top: 20px;
+  border-radius: 13px;
+  margin-top: 30px;
+  box-shadow: 0 3px 14px #0000000b;
 }
 
-.section h3 {
-  color: #171d50;
-  margin-bottom: 17px;
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid #eee;
 }
 
-label {
-  display: block;
-  font-weight: 600;
-  margin: 13px 0 7px;
-}
-
-input, select, textarea {
-  width: 100%;
-  padding: 13px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  outline: none;
-  font-size: 15px;
-  background: white;
-}
-
-textarea {
-  resize: vertical;
-  min-height: 90px;
-}
-
-input:focus, select:focus, textarea:focus {
-  border-color: #5545e8;
-}
-
-button.action {
-  background: #5545e8;
-  color: white;
+.cart-item button {
+  padding: 7px 10px;
   border: none;
-  padding: 13px 20px;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 15px;
+  background: #eaf2ef;
+}
+
+.cart-total {
+  font-size: 21px;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.primary-btn {
+  background: #f7c52e;
+  color: #0b2025;
+  padding: 13px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
   margin-top: 15px;
 }
 
-button:disabled {
-  opacity: .6;
-  cursor: not-allowed;
-}
-
-.listing {
-  border: 1px solid #eee;
-  padding: 15px;
-  border-radius: 9px;
+.checkout-section input,
+.checkout-section textarea {
+  width: 100%;
+  padding: 13px;
   margin-top: 12px;
-  overflow-wrap: anywhere;
+  border: 1px solid #dce4e1;
+  border-radius: 8px;
+  font-size: 15px;
 }
 
-.listing h4 {
-  color: #171d50;
-  margin-bottom: 7px;
+.checkout-section textarea {
+  min-height: 90px;
 }
 
-.status {
-  display: inline-block;
-  padding: 5px 10px;
-  border-radius: 20px;
-  font-size: 12px;
+.empty {
+  color: #777;
+  padding: 15px 0;
+}
+
+footer {
+  margin-top: 45px;
+  background: #0b2025;
+  color: white;
+  padding: 30px 5%;
+  text-align: center;
+}
+
+footer p {
+  color: #a9d9d0;
   margin-top: 8px;
-  background: #fff3cd;
-  color: #856404;
 }
 
-.status.approved {
-  background: #d4edda;
-  color: #155724;
+.hidden {
+  display: none;
 }
 
-.status.rejected {
-  background: #f8d7da;
-  color: #721c24;
+@media(max-width: 850px) {
+  .products {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-.message {
-  margin-top: 12px;
-  font-size: 14px;
-  overflow-wrap: anywhere;
-}
-
-.withdrawal-item {
-  border: 1px solid #eee;
-  padding: 15px;
-  border-radius: 9px;
-  margin-top: 12px;
-  line-height: 1.8;
-  overflow-wrap: anywhere;
-}
-
-.small-note {
-  color: #666;
-  font-size: 13px;
-  margin-top: 10px;
-}
-
-@media(max-width: 550px) {
-  .stats {
-    grid-template-columns: 1fr;
+@media(max-width: 480px) {
+  header {
+    padding: 15px;
   }
 
-  .section {
-    padding: 17px;
+  .logo {
+    font-size: 20px;
+  }
+
+  .header-actions button {
+    padding: 8px 10px;
+  }
+
+  .products {
+    gap: 11px;
+  }
+
+  .product img {
+    height: 145px;
+  }
+
+  .product-info {
+    padding: 11px;
+  }
+
+  .product h3 {
+    font-size: 14px;
+  }
+
+  .price {
+    font-size: 17px;
+  }
+
+  .hero h1 {
+    font-size: 24px;
   }
 }
 </style>
@@ -254,549 +298,256 @@ button:disabled {
 
 <body>
 
-<nav class="navbar">
-  <h2>TaskPayout</h2>
+<header>
+  <div class="logo">Business Shop</div>
 
-  <button
-    class="menu-button"
-    id="menuButton"
-    aria-label="Open menu"
-    aria-expanded="false"
-  >☰</button>
-
-  <div class="dropdown" id="dropdownMenu">
-    <button type="button" id="withdrawMenu">Withdraw</button>
-    <button type="button" id="supportMenu">Support</button>
-    <button type="button" id="logoutBtn">Logout</button>
+  <div class="header-actions">
+    <button onclick="goToCart()">🛒 Cart (<span id="cartCount">0</span>)</button>
+    <button onclick="logout()">Logout</button>
   </div>
-</nav>
+</header>
 
-<div class="container">
-
-  <div class="welcome">
-    <h2>My Dashboard</h2>
-    <p id="welcomeMessage">Welcome to your TaskPayout account.</p>
-  </div>
-
-  <div class="wallet">
-    <p>My Wallet Balance</p>
-    <h1 id="walletBalance">₦0.00</h1>
-    <p>Your available wallet balance.</p>
-  </div>
-
-  <div class="stats">
-    <div class="stat">
-      <h2 id="totalCount">0</h2>
-      <p>Total Submissions</p>
-    </div>
-
-    <div class="stat">
-      <h2 id="approvedCount">0</h2>
-      <p>Approved</p>
-    </div>
-
-    <div class="stat">
-      <h2 id="pendingCount">0</h2>
-      <p>Pending</p>
-    </div>
-  </div>
-
-  <!-- PRODUCT SUBMISSION -->
-
-  <div class="section" id="submissionSection">
-    <h3>Submit a Product or Service</h3>
-
-    <form id="listingForm">
-
-      <label for="productName">Product or Service Name</label>
-      <input
-        type="text"
-        id="productName"
-        maxlength="120"
-        placeholder="Enter product or service name"
-        required
-      >
-
-      <label for="category">Category</label>
-      <input
-        type="text"
-        id="category"
-        maxlength="100"
-        placeholder="Enter your own category"
-        required
-      >
-
-      <label for="description">Description (Optional)</label>
-      <textarea
-        id="description"
-        maxlength="1000"
-        placeholder="Describe your product or service"
-      ></textarea>
-
-      <button class="action" type="submit" id="submitBtn">
-        Submit for Review
-      </button>
-
-      <p id="formMessage" class="message"></p>
-    </form>
-
-    <p class="small-note">
-      Only submit products and services you own or are authorized to offer.
-      Never submit passwords or login credentials.
-    </p>
-  </div>
-
-  <!-- SUBMISSION HISTORY -->
-
-  <div class="section">
-    <h3>My Submission History</h3>
-    <div id="listingHistory">Loading submissions...</div>
-  </div>
-
-  <!-- WITHDRAWAL FORM -->
-
-  <div class="section" id="withdrawSection">
-    <h3>Withdraw Funds</h3>
-
-    <p>Available balance: <strong id="withdrawBalance">₦0.00</strong></p>
-
-    <form id="withdrawForm">
-
-      <label for="bankName">Payment Method / Bank</label>
-      <select id="bankName" required>
-        <option value="">Select your bank or payment method</option>
-        <option>Access Bank</option>
-        <option>Access Bank (Diamond)</option>
-        <option>Citibank Nigeria</option>
-        <option>Ecobank Nigeria</option>
-        <option>Fidelity Bank</option>
-        <option>First Bank of Nigeria</option>
-        <option>First City Monument Bank (FCMB)</option>
-        <option>Globus Bank</option>
-        <option>Guaranty Trust Bank (GTBank)</option>
-        <option>Heritage Bank</option>
-        <option>Jaiz Bank</option>
-        <option>Keystone Bank</option>
-        <option>Lotus Bank</option>
-        <option>Moniepoint MFB</option>
-        <option>Opay</option>
-        <option>Palmpay</option>
-        <option>Polaris Bank</option>
-        <option>PremiumTrust Bank</option>
-        <option>Providus Bank</option>
-        <option>Stanbic IBTC Bank</option>
-        <option>Standard Chartered Bank</option>
-        <option>Sterling Bank</option>
-        <option>SunTrust Bank</option>
-        <option>TAJBank</option>
-        <option>Titan Trust Bank</option>
-        <option>Union Bank</option>
-        <option>United Bank for Africa (UBA)</option>
-        <option>Unity Bank</option>
-        <option>Wema Bank</option>
-        <option>Zenith Bank</option>
-        <option>Kuda Bank</option>
-        <option>Other</option>
-      </select>
-
-      <label for="accountNumber">Account Number</label>
-      <input
-        type="text"
-        id="accountNumber"
-        inputmode="numeric"
-        maxlength="10"
-        minlength="10"
-        pattern="[0-9]{10}"
-        placeholder="Enter 10-digit account number"
-        required
-      >
-
-      <label for="accountName">Account Name</label>
-      <input
-        type="text"
-        id="accountName"
-        maxlength="120"
-        placeholder="Enter account holder's name"
-        required
-      >
-
-      <label for="withdrawAmount">Withdrawal Amount (₦)</label>
-      <input
-        type="number"
-        id="withdrawAmount"
-        min="1"
-        step="1"
-        placeholder="Enter amount to withdraw"
-        required
-      >
-
-      <button class="action" type="submit" id="withdrawBtn">
-        Withdraw
-      </button>
-
-      <p id="withdrawMessage" class="message"></p>
-
-    </form>
-
-    <p class="small-note">
-      Your withdrawal amount will be deducted from your available balance
-      immediately after a successful request. Pending requests are reviewed
-      by the administrator. Rejected requests are refunded.
-    </p>
-
-    <h3 style="margin-top:25px;">My Withdrawal History</h3>
-
-    <div id="withdrawalHistory">Loading withdrawals...</div>
-  </div>
-
-  <!-- SUPPORT -->
-
-  <div class="section" id="supportSection">
-    <h3>Account Support</h3>
-    <p>Support will be set up here. We will work on this section separately.</p>
-  </div>
-
+<div class="search-area">
+  <input
+    type="search"
+    id="searchInput"
+    placeholder="Search for products..."
+    oninput="searchProducts()"
+  >
 </div>
 
+<section class="hero">
+  <h1>Welcome to Business Shop</h1>
+  <p>Discover products you love. Shop easily, securely and conveniently.</p>
+  <button onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">
+    Start Shopping
+  </button>
+</section>
+
+<main class="container">
+
+  <section id="shop">
+    <div class="section-heading">
+      <h2>Explore Products</h2>
+    </div>
+
+    <div class="products" id="productList">
+
+      <div class="product" data-name="Wireless Headphones">
+        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600" alt="Wireless headphones">
+        <div class="product-info">
+          <h3>Wireless Headphones</h3>
+          <p class="price">₦25,000</p>
+          <button onclick="addToCart('Wireless Headphones',25000)">Add to Cart</button>
+        </div>
+      </div>
+
+      <div class="product" data-name="Smart Watch">
+        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600" alt="Smart watch">
+        <div class="product-info">
+          <h3>Smart Watch</h3>
+          <p class="price">₦35,000</p>
+          <button onclick="addToCart('Smart Watch',35000)">Add to Cart</button>
+        </div>
+      </div>
+
+      <div class="product" data-name="Sneakers">
+        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600" alt="Sneakers">
+        <div class="product-info">
+          <h3>Sneakers</h3>
+          <p class="price">₦45,000</p>
+          <button onclick="addToCart('Sneakers',45000)">Add to Cart</button>
+        </div>
+      </div>
+
+      <div class="product" data-name="Backpack">
+        <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600" alt="Backpack">
+        <div class="product-info">
+          <h3>Backpack</h3>
+          <p class="price">₦18,000</p>
+          <button onclick="addToCart('Backpack',18000)">Add to Cart</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="cart-section" id="cartSection">
+    <h2>My Shopping Cart</h2>
+    <div id="cartItems">
+      <p class="empty">Your cart is empty.</p>
+    </div>
+
+    <div class="cart-total">
+      Total: <span id="cartTotal">₦0.00</span>
+    </div>
+
+    <button class="primary-btn" onclick="showCheckout()">
+      Proceed to Checkout
+    </button>
+  </section>
+
+  <section class="checkout-section hidden" id="checkoutSection">
+    <h2>Checkout</h2>
+    <p style="margin-top:8px;color:#667;">Enter your delivery details.</p>
+
+    <form id="checkoutForm">
+      <input id="customerName" placeholder="Full name" required>
+      <input id="customerEmail" type="email" placeholder="Email address" required>
+      <input id="customerPhone" type="tel" placeholder="Phone number" required>
+      <textarea id="customerAddress" placeholder="Delivery address" required></textarea>
+
+      <button class="primary-btn" type="submit">Place Order</button>
+    </form>
+
+    <p id="checkoutMessage" style="margin-top:12px;"></p>
+  </section>
+
+  <section class="orders-section">
+    <h2>My Orders</h2>
+    <p class="empty">Your order history will appear here after orders are connected to the database.</p>
+  </section>
+
+</main>
+
+<footer>
+  <h2>Business Shop</h2>
+  <p>Your shopping destination.</p>
+  <p>© 2026 Business Shop. All rights reserved.</p>
+</footer>
+
 <script>
-const SUPABASE_URL =
-  "https://czimlirfmlsiybuqllsf.supabase.co";
-
-const SUPABASE_KEY =
-  "sb_publishable_2rDw4HNQME_r9IK1c7l1tg_1JOnxoBE";
-
-const db = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-let currentUser = null;
+let cart = [];
 
 function money(amount) {
-  return Number(amount || 0).toLocaleString("en-NG", {
+  return Number(amount).toLocaleString("en-NG", {
     style: "currency",
-    currency: "NGN",
-    minimumFractionDigits: 2
+    currency: "NGN"
   });
 }
 
+function addToCart(name, price) {
+  const existing = cart.find(item => item.name === name);
 
-// MENU
-
-const menuButton = document.getElementById("menuButton");
-const dropdownMenu = document.getElementById("dropdownMenu");
-
-menuButton.addEventListener("click", function() {
-  const isOpen = dropdownMenu.classList.toggle("show");
-  menuButton.setAttribute("aria-expanded", isOpen);
-});
-
-document.getElementById("withdrawMenu")
-.addEventListener("click", function() {
-  dropdownMenu.classList.remove("show");
-  menuButton.setAttribute("aria-expanded", "false");
-  document.getElementById("withdrawSection")
-    .scrollIntoView({ behavior: "smooth" });
-});
-
-document.getElementById("supportMenu")
-.addEventListener("click", function() {
-  dropdownMenu.classList.remove("show");
-  menuButton.setAttribute("aria-expanded", "false");
-  document.getElementById("supportSection")
-    .scrollIntoView({ behavior: "smooth" });
-});
-
-
-// LOGIN CHECK
-
-async function checkLogin() {
-  const { data, error } = await db.auth.getUser();
-
-  if (error || !data.user) {
-    window.location.replace("login.html");
-    return;
-  }
-
-  currentUser = data.user;
-
-  document.getElementById("welcomeMessage").textContent =
-    "Welcome, " + (currentUser.email || "User") + "!";
-
-  await Promise.all([
-    loadWallet(),
-    loadListings(),
-    loadWithdrawals()
-  ]);
-}
-
-
-// LOAD REAL WALLET BALANCE
-
-async function loadWallet() {
-  const { data, error } = await db
-    .from("user_wallets")
-    .select("balance")
-    .eq("user_id", currentUser.id)
-    .maybeSingle();
-
-  if (error) {
-    document.getElementById("walletBalance").textContent =
-      "Unable to load";
-    document.getElementById("withdrawBalance").textContent =
-      "Unable to load";
-    return;
-  }
-
-  const balance = data ? Number(data.balance) : 0;
-
-  document.getElementById("walletBalance").textContent =
-    money(balance);
-
-  document.getElementById("withdrawBalance").textContent =
-    money(balance);
-
-  document.getElementById("withdrawAmount").max = balance;
-}
-
-
-// LOAD PRODUCT SUBMISSIONS
-
-async function loadListings() {
-  const history = document.getElementById("listingHistory");
-
-  const { data, error } = await db
-    .from("product_listings")
-    .select("id, product_name, category, description, status, created_at")
-    .eq("user_id", currentUser.id)
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    history.textContent = "Could not load submissions: " + error.message;
-    return;
-  }
-
-  const listings = data || [];
-
-  document.getElementById("totalCount").textContent =
-    listings.length;
-
-  document.getElementById("approvedCount").textContent =
-    listings.filter(item => item.status === "approved").length;
-
-  document.getElementById("pendingCount").textContent =
-    listings.filter(item => item.status === "pending").length;
-
-  history.replaceChildren();
-
-  if (listings.length === 0) {
-    history.textContent = "You have not submitted anything yet.";
-    return;
-  }
-
-  listings.forEach(item => {
-    const card = document.createElement("div");
-    card.className = "listing";
-
-    const title = document.createElement("h4");
-    title.textContent = item.product_name;
-
-    const category = document.createElement("p");
-    category.textContent = "Category: " + item.category;
-
-    const description = document.createElement("p");
-    description.textContent =
-      item.description || "No description provided.";
-
-    const status = document.createElement("span");
-    status.className = "status " + item.status;
-    status.textContent = item.status.toUpperCase();
-
-    card.append(title, category, description, status);
-    history.appendChild(card);
-  });
-}
-
-
-// SUBMIT PRODUCT OR SERVICE
-
-document.getElementById("listingForm")
-.addEventListener("submit", async function(event) {
-  event.preventDefault();
-
-  if (!currentUser) return;
-
-  const button = document.getElementById("submitBtn");
-  const message = document.getElementById("formMessage");
-
-  button.disabled = true;
-  button.textContent = "Submitting...";
-  message.textContent = "";
-
-  try {
-    const { error } = await db
-      .from("product_listings")
-      .insert({
-        user_id: currentUser.id,
-        product_name: document.getElementById("productName").value.trim(),
-        category: document.getElementById("category").value.trim(),
-        description:
-          document.getElementById("description").value.trim() || null
-      });
-
-    if (error) throw error;
-
-    message.style.color = "green";
-    message.textContent = "Your submission has been sent for review!";
-
-    this.reset();
-    await loadListings();
-
-  } catch (error) {
-    message.style.color = "red";
-    message.textContent = "Submission failed: " + error.message;
-  }
-
-  button.disabled = false;
-  button.textContent = "Submit for Review";
-});
-
-
-// SUBMIT WITHDRAWAL
-
-document.getElementById("withdrawForm")
-.addEventListener("submit", async function(event) {
-  event.preventDefault();
-
-  if (!currentUser) return;
-
-  const button = document.getElementById("withdrawBtn");
-  const message = document.getElementById("withdrawMessage");
-
-  const bankName = document.getElementById("bankName").value;
-  const accountNumber =
-    document.getElementById("accountNumber").value.trim();
-  const accountName =
-    document.getElementById("accountName").value.trim();
-  const amount =
-    Number(document.getElementById("withdrawAmount").value);
-
-  if (!Number.isInteger(amount) || amount <= 0) {
-    message.style.color = "red";
-    message.textContent = "Enter a valid whole-number withdrawal amount.";
-    return;
-  }
-
-  button.disabled = true;
-  button.textContent = "Processing...";
-  message.textContent = "";
-
-  try {
-    const { data, error } = await db.rpc("request_withdrawal", {
-      p_bank_name: bankName,
-      p_account_number: accountNumber,
-      p_account_name: accountName,
-      p_amount: amount
+  if (existing) {
+    existing.quantity++;
+  } else {
+    cart.push({
+      name,
+      price,
+      quantity: 1
     });
-
-    if (error) throw error;
-
-    message.style.color = "green";
-    message.textContent =
-      "Withdrawal request submitted successfully. Your request is Pending. Reference: " + data;
-
-    this.reset();
-
-    await Promise.all([
-      loadWallet(),
-      loadWithdrawals()
-    ]);
-
-  } catch (error) {
-    message.style.color = "red";
-    message.textContent = error.message;
   }
 
-  button.disabled = false;
-  button.textContent = "Withdraw";
-});
+  renderCart();
+  alert(name + " added to your cart!");
+}
 
+function renderCart() {
+  const container = document.getElementById("cartItems");
+  container.replaceChildren();
 
-// LOAD USER WITHDRAWAL HISTORY
+  let total = 0;
+  let count = 0;
 
-async function loadWithdrawals() {
-  const history = document.getElementById("withdrawalHistory");
-
-  const { data, error } = await db
-    .from("withdrawal_requests")
-    .select("id, bank_name, account_number, account_name, amount, status, created_at")
-    .eq("user_id", currentUser.id)
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    history.textContent =
-      "Could not load withdrawals: " + error.message;
-    return;
+  if (cart.length === 0) {
+    container.innerHTML = '<p class="empty">Your cart is empty.</p>';
   }
 
-  history.replaceChildren();
+  cart.forEach((item, index) => {
+    total += item.price * item.quantity;
+    count += item.quantity;
 
-  if (!data || data.length === 0) {
-    history.textContent = "You have not made a withdrawal request yet.";
-    return;
-  }
+    const row = document.createElement("div");
+    row.className = "cart-item";
 
-  data.forEach(item => {
-    const card = document.createElement("div");
-    card.className = "withdrawal-item";
-
-    const details = document.createElement("p");
+    const details = document.createElement("div");
     details.textContent =
-      "Bank: " + item.bank_name +
-      " | Account: " + item.account_number +
-      " | Name: " + item.account_name +
-      " | Amount: " + money(item.amount);
+      item.name + " — " + money(item.price) +
+      " × " + item.quantity;
 
-    const status = document.createElement("span");
-    status.className = "status " + item.status;
-    status.textContent = item.status.toUpperCase();
+    const controls = document.createElement("div");
 
-    const date = document.createElement("p");
-    date.className = "small-note";
-    date.textContent =
-      "Submitted: " + new Date(item.created_at).toLocaleString();
+    const minus = document.createElement("button");
+    minus.textContent = "−";
+    minus.onclick = () => changeQuantity(index, -1);
 
-    card.append(details, status, date);
-    history.appendChild(card);
+    const plus = document.createElement("button");
+    plus.textContent = "+";
+    plus.onclick = () => changeQuantity(index, 1);
+
+    const remove = document.createElement("button");
+    remove.textContent = "Remove";
+    remove.onclick = () => removeItem(index);
+
+    controls.append(minus, plus, remove);
+    row.append(details, controls);
+    container.appendChild(row);
+  });
+
+  document.getElementById("cartTotal").textContent = money(total);
+  document.getElementById("cartCount").textContent = count;
+}
+
+function changeQuantity(index, change) {
+  cart[index].quantity += change;
+
+  if (cart[index].quantity <= 0) {
+    cart.splice(index, 1);
+  }
+
+  renderCart();
+}
+
+function removeItem(index) {
+  cart.splice(index, 1);
+  renderCart();
+}
+
+function goToCart() {
+  document.getElementById("cartSection")
+    .scrollIntoView({behavior:"smooth"});
+}
+
+function showCheckout() {
+  if (cart.length === 0) {
+    alert("Please add a product to your cart first.");
+    return;
+  }
+
+  document.getElementById("checkoutSection").classList.remove("hidden");
+
+  document.getElementById("checkoutSection")
+    .scrollIntoView({behavior:"smooth"});
+}
+
+function searchProducts() {
+  const search = document.getElementById("searchInput")
+    .value.toLowerCase();
+
+  document.querySelectorAll(".product").forEach(product => {
+    const name = product.dataset.name.toLowerCase();
+    product.style.display = name.includes(search) ? "" : "none";
   });
 }
 
+document.getElementById("checkoutForm")
+.addEventListener("submit", function(event) {
+  event.preventDefault();
 
-// LOGOUT
+  document.getElementById("checkoutMessage").textContent =
+    "Your checkout details are ready. Online order submission will work after the database is connected.";
 
-document.getElementById("logoutBtn")
-.addEventListener("click", async function() {
-  this.disabled = true;
-  this.textContent = "Logging out...";
-
-  const { error } = await db.auth.signOut();
-
-  if (error) {
-    alert("Could not log out: " + error.message);
-    this.disabled = false;
-    this.textContent = "Logout";
-    return;
-  }
-
-  window.location.replace("login.html");
+  document.getElementById("checkoutMessage").style.color = "#0d7061";
 });
 
+function logout() {
+  alert("Login and Supabase authentication will be connected in the next step.");
+}
 
-// START DASHBOARD
-
-checkLogin();
-
+renderCart();
 </script>
 
 </body>
-</html>
+  </html>
+  
