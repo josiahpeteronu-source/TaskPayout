@@ -23,7 +23,6 @@
   --gold: #f7c52e;
   --aqua: #a9d9d0;
   --blue: #69c7da;
-  --white: #ffffff;
   --background: #f3f7f6;
   --text: #203438;
   --muted: #718184;
@@ -42,8 +41,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
   flex-wrap: wrap;
+  gap: 12px;
 }
 
 .brand {
@@ -56,14 +55,12 @@ body {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 15px;
 }
 
 .nav-links a {
   color: white;
   text-decoration: none;
-  font-size: 14px;
 }
 
 button {
@@ -80,8 +77,23 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.logout-btn {
+.logout-btn, .primary-btn {
   background: var(--gold);
+  color: var(--dark);
+}
+
+.secondary-btn {
+  background: var(--dark);
+  color: white;
+}
+
+.danger-btn {
+  background: #c83c3c;
+  color: white;
+}
+
+.info-btn {
+  background: var(--blue);
   color: var(--dark);
 }
 
@@ -98,6 +110,7 @@ button:disabled {
 
 .admin-header p {
   color: var(--aqua);
+  margin-top: 7px;
   overflow-wrap: anywhere;
 }
 
@@ -113,6 +126,7 @@ button:disabled {
   border-radius: 10px;
   padding: 18px;
   margin-bottom: 20px;
+  line-height: 1.6;
   overflow-wrap: anywhere;
 }
 
@@ -132,7 +146,6 @@ button:disabled {
   padding: 21px;
   border-radius: 13px;
   border: 1px solid var(--border);
-  box-shadow: 0 3px 12px rgba(11,32,37,.04);
 }
 
 .stat-card p {
@@ -152,7 +165,6 @@ button:disabled {
   border-radius: 13px;
   border: 1px solid var(--border);
   margin-bottom: 22px;
-  box-shadow: 0 3px 12px rgba(11,32,37,.04);
 }
 
 .section h2 {
@@ -194,7 +206,6 @@ input, textarea, select {
 
 input:focus, textarea:focus, select:focus {
   outline: 2px solid var(--aqua);
-  border-color: var(--dark);
 }
 
 textarea {
@@ -202,24 +213,11 @@ textarea {
   resize: vertical;
 }
 
-.primary-btn {
-  background: var(--gold);
-  color: var(--dark);
-}
-
-.secondary-btn {
-  background: var(--dark);
-  color: white;
-}
-
-.danger-btn {
-  background: #c83c3c;
-  color: white;
-}
-
-.info-btn {
-  background: var(--blue);
-  color: var(--dark);
+.small-note {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 8px;
 }
 
 .product-grid {
@@ -234,6 +232,7 @@ textarea {
   border-radius: 11px;
   padding: 15px;
   overflow-wrap: anywhere;
+  margin-top: 14px;
 }
 
 .product-card img {
@@ -295,16 +294,24 @@ textarea {
   margin: 6px 0;
 }
 
-.small-note {
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.5;
-  margin-top: 8px;
-}
-
 .empty {
   color: var(--muted);
   padding: 15px 0;
+}
+
+.section-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.order-status {
+  margin-top: 12px;
+}
+
+.order-status select {
+  margin: 8px 0;
 }
 
 @media (max-width: 600px) {
@@ -314,6 +321,10 @@ textarea {
 
   .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .field.full {
+    grid-column: auto;
   }
 
   .section {
@@ -377,6 +388,7 @@ textarea {
       <h2 id="formTitle">Add New Product</h2>
 
       <form id="productForm">
+
         <div class="form-grid">
 
           <div class="field">
@@ -388,7 +400,8 @@ textarea {
           <div class="field">
             <label for="productPrice">Price (₦)</label>
             <input id="productPrice" type="number"
-              min="0" step="0.01" placeholder="Enter price" required>
+              min="0" step="0.01"
+              placeholder="Enter price" required>
           </div>
 
           <div class="field full">
@@ -401,9 +414,10 @@ textarea {
             <label for="productImage">Product Image</label>
             <input id="productImage" type="file"
               accept="image/jpeg,image/png,image/webp">
+
             <p class="small-note">
-              JPG, PNG or WEBP. Maximum file size: 5 MB.
-              When editing, leave this empty to keep the current image.
+              JPG, PNG or WEBP. Maximum size: 5 MB.
+              An image is optional when editing a product.
             </p>
           </div>
 
@@ -413,16 +427,23 @@ textarea {
           Add Product
         </button>
 
-        <button class="secondary-btn hidden" id="cancelEditBtn"
-          type="button">Cancel Edit</button>
+        <button class="secondary-btn hidden"
+          id="cancelEditBtn" type="button">
+          Cancel Edit
+        </button>
+
       </form>
     </section>
 
     <section class="section">
       <h2>Store Products</h2>
-      <button class="secondary-btn" id="refreshProducts" type="button">
-        Refresh Products
-      </button>
+
+      <div class="section-actions">
+        <button class="secondary-btn" id="refreshProducts">
+          Refresh Products
+        </button>
+      </div>
+
       <div id="productsContainer" class="product-grid">
         Loading products...
       </div>
@@ -430,9 +451,13 @@ textarea {
 
     <section class="section">
       <h2>Customer Orders</h2>
-      <button class="secondary-btn" id="refreshOrders" type="button">
-        Refresh Orders
-      </button>
+
+      <div class="section-actions">
+        <button class="secondary-btn" id="refreshOrders">
+          Refresh Orders
+        </button>
+      </div>
+
       <div id="ordersContainer">
         Loading orders...
       </div>
@@ -442,6 +467,8 @@ textarea {
 </main>
 
 <script>
+"use strict";
+
 const SUPABASE_URL =
   "https://czimlirfmlsiybuqllsf.supabase.co";
 
@@ -462,8 +489,10 @@ let currentUser = null;
 let editingProductId = null;
 let currentProducts = [];
 
-function showMessage(text) {
+function showMessage(text, isError = false) {
   message.textContent = text;
+  message.style.color = isError ? "#b42318" : "#203438";
+  message.classList.remove("hidden");
 }
 
 function naira(amount) {
@@ -476,61 +505,116 @@ function naira(amount) {
 function addText(parent, tag, value, className) {
   const element = document.createElement(tag);
   element.textContent = value == null ? "" : String(value);
-  if (className) element.className = className;
+
+  if (className) {
+    element.className = className;
+  }
+
   parent.appendChild(element);
   return element;
 }
 
 function addDetail(parent, label, value) {
   const p = document.createElement("p");
+
   p.textContent = label + ": " +
     (value === null || value === undefined || value === ""
       ? "Not provided"
       : String(value));
+
   parent.appendChild(p);
 }
 
-async function checkAdmin() {
-  const { data, error } = await db.auth.getUser();
+function withTimeout(promise, milliseconds, description) {
+  let timer;
 
-  if (error || !data.user) {
-    window.location.href = "login.html";
-    return;
-  }
+  const timeout = new Promise((resolve, reject) => {
+    timer = setTimeout(() => {
+      reject(new Error(description + " timed out. Check your internet connection and try again."));
+    }, milliseconds);
+  });
 
-  currentUser = data.user;
-
-  document.getElementById("adminEmail").textContent =
-    "Logged in as: " + currentUser.email;
-
-  const { data: admin, error: adminError } = await db
-    .from("admin_users")
-    .select("user_id")
-    .eq("user_id", currentUser.id)
-    .maybeSingle();
-
-  if (adminError) {
-    showMessage("Could not verify administrator access: " +
-      adminError.message);
-    return;
-  }
-
-  if (!admin) {
-    showMessage("Access denied. This account is not an administrator.");
-    return;
-  }
-
-  message.classList.add("hidden");
-  adminContent.classList.remove("hidden");
-
-  await Promise.all([
-    loadProducts(),
-    loadOrders()
-  ]);
+  return Promise.race([promise, timeout])
+    .finally(() => clearTimeout(timer));
 }
 
+// VERIFY ADMIN ACCOUNT
+async function checkAdmin() {
+  try {
+    if (!window.supabase) {
+      throw new Error("Supabase library did not load. Refresh the page.");
+    }
+
+    showMessage("Checking your login session...");
+
+    const { data: sessionData, error: sessionError } =
+      await withTimeout(
+        db.auth.getSession(),
+        15000,
+        "Checking your login session"
+      );
+
+    if (sessionError) throw sessionError;
+
+    const session = sessionData.session;
+
+    if (!session || !session.user) {
+      window.location.replace("login.html");
+      return;
+    }
+
+    currentUser = session.user;
+
+    document.getElementById("adminEmail").textContent =
+      "Logged in as: " + currentUser.email;
+
+    showMessage("Verifying administrator permissions...");
+
+    const { data: adminRecord, error: adminError } =
+      await withTimeout(
+        db.from("admin_users")
+          .select("user_id")
+          .eq("user_id", currentUser.id)
+          .maybeSingle(),
+        15000,
+        "Administrator verification"
+      );
+
+    if (adminError) {
+      throw new Error(
+        "Supabase could not verify your administrator account: " +
+        adminError.message
+      );
+    }
+
+    if (!adminRecord) {
+      showMessage(
+        "Access denied. This account is not registered as an administrator.",
+        true
+      );
+      return;
+    }
+
+    message.classList.add("hidden");
+    adminContent.classList.remove("hidden");
+
+    await Promise.all([
+      loadProducts(),
+      loadOrders()
+    ]);
+
+  } catch (error) {
+    showMessage(
+      "ADMIN DASHBOARD ERROR: " + error.message,
+      true
+    );
+  }
+}
+
+// PRODUCT FORM
 function resetProductForm() {
   editingProductId = null;
+
   document.getElementById("productForm").reset();
   document.getElementById("formTitle").textContent = "Add New Product";
   document.getElementById("saveProductBtn").textContent = "Add Product";
@@ -545,21 +629,24 @@ async function uploadProductImage(file) {
   ];
 
   if (!allowedTypes.includes(file.type)) {
-    throw new Error("Please choose a JPG, PNG or WEBP image.");
+    throw new Error("Choose a JPG, PNG or WEBP image.");
   }
 
   if (file.size > 5 * 1024 * 1024) {
     throw new Error("Image must not be larger than 5 MB.");
   }
 
-  const extension = file.type === "image/jpeg" ? "jpg" :
+  const extension =
+    file.type === "image/jpeg" ? "jpg" :
     file.type === "image/png" ? "png" : "webp";
 
-  const uniquePart = (window.crypto && crypto.randomUUID)
-    ? crypto.randomUUID()
-    : Date.now() + "-" + Math.random().toString(36).slice(2);
+  const uniquePart =
+    window.crypto && crypto.randomUUID
+      ? crypto.randomUUID()
+      : Date.now() + "-" + Math.random().toString(36).slice(2);
 
-  const path = currentUser.id + "/" + uniquePart + "." + extension;
+  const path =
+    currentUser.id + "/" + uniquePart + "." + extension;
 
   const { error } = await db.storage
     .from("store-products")
@@ -581,10 +668,15 @@ document.getElementById("productForm")
   .addEventListener("submit", async function(event) {
     event.preventDefault();
 
-    const name = document.getElementById("productName").value.trim();
-    const price = Number(document.getElementById("productPrice").value);
+    const name =
+      document.getElementById("productName").value.trim();
+
+    const price =
+      Number(document.getElementById("productPrice").value);
+
     const description =
       document.getElementById("productDescription").value.trim();
+
     const imageFile =
       document.getElementById("productImage").files[0];
 
@@ -594,38 +686,34 @@ document.getElementById("productForm")
     }
 
     const button = document.getElementById("saveProductBtn");
-    const oldText = button.textContent;
 
     button.disabled = true;
     button.textContent = "Saving...";
 
+    const productIdBeingEdited = editingProductId;
+
     try {
       const productData = {
-        name,
-        price,
+        name: name,
+        price: price,
         description: description || null,
         updated_at: new Date().toISOString()
       };
 
       if (imageFile) {
-        productData.image_url = await uploadProductImage(imageFile);
+        productData.image_url =
+          await uploadProductImage(imageFile);
       }
 
       let result;
 
-      if (editingProductId !== null) {
+      if (productIdBeingEdited !== null) {
         result = await db
           .from("store_products")
           .update(productData)
-          .eq("id", editingProductId)
+          .eq("id", productIdBeingEdited)
           .select("id");
       } else {
-        if (!imageFile) {
-          throw new Error("Please select a product image.");
-        }
-
-        productData.image_url = productData.image_url || null;
-
         result = await db
           .from("store_products")
           .insert(productData)
@@ -635,34 +723,40 @@ document.getElementById("productForm")
       if (result.error) throw result.error;
 
       if (!result.data || result.data.length === 0) {
-        throw new Error("Product was not saved. Check admin permissions.");
+        throw new Error(
+          "No product was saved. Check your database permissions."
+        );
       }
 
-      alert(editingProductId !== null
-        ? "Product updated successfully."
-        : "Product added successfully.");
+      alert(
+        productIdBeingEdited !== null
+          ? "Product updated successfully."
+          : "Product added successfully."
+      );
 
       resetProductForm();
       await loadProducts();
 
     } catch (error) {
       alert("Could not save product: " + error.message);
+
     } finally {
       button.disabled = false;
-      if (editingProductId === null) {
-        button.textContent = "Add Product";
-      } else {
-        button.textContent = oldText;
-      }
+      button.textContent = editingProductId !== null
+        ? "Save Changes"
+        : "Add Product";
     }
   });
 
+// LOAD PRODUCTS
 async function loadProducts() {
   productsContainer.textContent = "Loading products...";
 
   const { data, error } = await db
     .from("store_products")
-    .select("id, name, description, price, image_url, is_active, created_at")
+    .select(
+      "id, name, description, price, image_url, is_active, created_at"
+    )
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -682,7 +776,12 @@ async function loadProducts() {
   productsContainer.replaceChildren();
 
   if (currentProducts.length === 0) {
-    addText(productsContainer, "p", "No products added yet.", "empty");
+    addText(
+      productsContainer,
+      "p",
+      "No products added yet.",
+      "empty"
+    );
     return;
   }
 
@@ -700,9 +799,16 @@ async function loadProducts() {
 
     addText(card, "h3", product.name);
     addText(card, "p", naira(product.price), "price");
-    addText(card, "p", product.description || "No description provided.");
 
-    addText(card, "p",
+    addText(
+      card,
+      "p",
+      product.description || "No description provided."
+    );
+
+    addText(
+      card,
+      "p",
       product.is_active ? "Active product" : "Hidden product",
       "status"
     );
@@ -713,7 +819,9 @@ async function loadProducts() {
     const editBtn = document.createElement("button");
     editBtn.className = "info-btn";
     editBtn.textContent = "Edit";
-    editBtn.addEventListener("click", () => editProduct(product.id));
+    editBtn.addEventListener("click", () => {
+      editProduct(product.id);
+    });
 
     const toggleBtn = document.createElement("button");
     toggleBtn.className = "secondary-btn";
@@ -735,26 +843,41 @@ async function loadProducts() {
   });
 }
 
+// EDIT PRODUCT
 function editProduct(id) {
-  const product = currentProducts.find(p => String(p.id) === String(id));
+  const product = currentProducts.find(
+    p => String(p.id) === String(id)
+  );
+
   if (!product) return;
 
   editingProductId = product.id;
 
-  document.getElementById("productName").value = product.name;
-  document.getElementById("productPrice").value = product.price;
+  document.getElementById("productName").value =
+    product.name;
+
+  document.getElementById("productPrice").value =
+    product.price;
+
   document.getElementById("productDescription").value =
     product.description || "";
+
   document.getElementById("productImage").value = "";
 
-  document.getElementById("formTitle").textContent = "Edit Product";
-  document.getElementById("saveProductBtn").textContent = "Save Changes";
-  document.getElementById("cancelEditBtn").classList.remove("hidden");
+  document.getElementById("formTitle").textContent =
+    "Edit Product";
+
+  document.getElementById("saveProductBtn").textContent =
+    "Save Changes";
+
+  document.getElementById("cancelEditBtn")
+    .classList.remove("hidden");
 
   document.getElementById("productFormSection")
     .scrollIntoView({ behavior: "smooth" });
 }
 
+// HIDE OR SHOW PRODUCT
 async function toggleProduct(id, isActive, button) {
   button.disabled = true;
 
@@ -775,8 +898,11 @@ async function toggleProduct(id, isActive, button) {
   await loadProducts();
 }
 
+// DELETE PRODUCT
 async function deleteProduct(id, button) {
-  if (!confirm("Are you sure you want to delete this product?")) return;
+  if (!confirm("Are you sure you want to delete this product?")) {
+    return;
+  }
 
   button.disabled = true;
 
@@ -791,13 +917,14 @@ async function deleteProduct(id, button) {
     return;
   }
 
-  alert("Product deleted.");
+  alert("Product deleted successfully.");
   await loadProducts();
 }
 
 document.getElementById("cancelEditBtn")
   .addEventListener("click", resetProductForm);
 
+// LOAD CUSTOMER ORDERS
 async function loadOrders() {
   ordersContainer.textContent = "Loading orders...";
 
@@ -816,224 +943,16 @@ async function loadOrders() {
 
   const orders = data || [];
 
-  document.getElementById("totalOrders").textContent = orders.length;
+  document.getElementById("totalOrders").textContent =
+    orders.length;
+
   document.getElementById("pendingOrders").textContent =
     orders.filter(o => o.status === "pending").length;
 
   ordersContainer.replaceChildren();
 
   if (orders.length === 0) {
-    addText(ordersContainer, "p", "No customer orders yet.", "empty");
-    return;
-  }
-
-  const orderIds = orders.map(o => o.id);
-  let items = [];
-
-  if (orderIds.length > 0) {
-    const { data: itemData, error: itemError } = await db
-      .from("store_order_items")
-      .select("id, order_id, product_name, unit_price, quantity, subtotal")
-      .in("order_id", orderIds);
-
-    if (itemError) {
-      ordersContainer.textContent =
-        "Could not load order items: " + itemError.message;
-      return;
-    }
-
-    items = itemData || [];
-  }
-
-  orders.forEach(order => {
-    const card = document.createElement("article");
-    card.className = "order-card";
-
-    addText(card, "h3", "Order #" + order.id);
-    addDetail(card, "Customer", order.customer_name);
-    addDetail(card, "Email", order.customer_email);
-    addDetail(card, "Phone", order.customer_phone);
-    addDetail(card, "Delivery address", order.delivery_address);
-    addDetail(card, "Total", naira(order.total_amount));
-    addDetail(card, "Date", new Date(order.created_at).toLocaleString());
-
-    addText(card, "p", "Status: " + order.status, "status");
-
-    const orderItems = items.filter(
-      item => String(item.order_id) === String(order.id)
-    );
-
-    const itemBox = document.createElement("div");
-    itemBox.className = "order-items";
-    addText(itemBox, "strong", "Items ordered");
-
-    if (orderItems.length === 0) {
-      addText(itemBox, "p", "No item details found.");
-    } else {
-      orderItems.forEach(item => {
-        addText(itemBox, "p",
-          item.product_name + " × " + item.quantity +
-          " — " + naira(item.subtotal)
-        );
-      });
-    }
-
-    card.appendChild(itemBox);
-
-    const statusLaests...";
-
-    const { data, error } = await supabaseClient
-      .from("withdrawal_requests")
-      .select(
-        "id, user_id, user_name, user_email, bank_name, account_number, account_name, amount, status, created_at"
-      )
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      withdrawalsContainer.textContent =
-        "Could not load withdrawals: " + error.message;
-      return;
-    }
-
-    const withdrawals = data || [];
-
-    document.getElementById("pendingWithdrawals").textContent =
-      withdrawals.filter(x => x.status === "pending").length;
-
-    withdrawalsContainer.replaceChildren();
-
-    if (withdrawals.length === 0) {
-      withdrawalsContainer.textContent =
-        "No withdrawal requests yet.";
-      return;
-    }
-
-    withdrawals.forEach(request => {
-      const card = document.createElement("div");
-      card.className = "listing";
-
-      const heading = document.createElement("h3");
-      heading.textContent = "Withdrawal #" + request.id;
-      card.appendChild(heading);
-
-      addDetail(card, "User name", request.user_name);
-      addDetail(card, "User email", request.user_email);
-      addDetail(card, "User ID", request.user_id);
-      addDetail(card, "Payment method / Bank", request.bank_name);
-      addDetail(card, "Account number", request.account_number);
-      addDetail(card, "Account name", request.account_name);
-      addDetail(card, "Amount", naira(request.amount));
-      addDetail(
-        card,
-        "Request date",
-        new Date(request.created_at).toLocaleString()
-      );
-
-      const status = document.createElement("p");
-      status.className = "status";
-      status.textContent = "Status: " + request.status;
-      card.appendChild(status);
-
-      if (request.status === "pending") {
-        const approveBtn = document.createElement("button");
-        approveBtn.className = "approve";
-        approveBtn.textContent = "Approve Payment";
-
-        approveBtn.addEventListener("click", () => {
-          processWithdrawal(
-            request.id,
-            "approved",
-            approveBtn
-          );
-        });
-
-        const rejectBtn = document.createElement("button");
-        rejectBtn.className = "reject";
-        rejectBtn.textContent = "Reject & Refund";
-
-        rejectBtn.addEventListener("click", () => {
-          processWithdrawal(
-            request.id,
-            "rejected",
-            rejectBtn
-          );
-        });
-
-        card.appendChild(approveBtn);
-        card.appendChild(rejectBtn);
-      }
-
-      withdrawalsContainer.appendChild(card);
-    });
-  }
-
-  async function processWithdrawal(id, action, button) {
-    let confirmed;
-
-    if (action === "approved") {
-      confirmed = confirm(
-        "Have you successfully sent this money to the user's account? " +
-        "Only continue if the transfer is complete."
-      );
-    } else {
-      confirmed = confirm(
-        "Reject this withdrawal? The amount will be refunded " +
-        "to the user's wallet."
-      );
-    }
-
-    if (!confirmed) return;
-
-    const oldText = button.textContent;
-    button.disabled = true;
-    button.textContent = "Processing...";
-
-    const functionName =
-      action === "approved"
-        ? "approve_withdrawal"
-        : "reject_withdrawal";
-
-    const { error } = await supabaseClient.rpc(
-      functionName,
-      { p_request_id: id }
-    );
-
-    if (error) {
-      alert("Operation failed: " + error.message);
-      button.disabled = false;
-      button.textContent = oldText;
-      return;
-    }
-
-    alert(
-      action === "approved"
-        ? "Withdrawal marked as approved."
-        : "Withdrawal rejected. The wallet refund was processed."
-    );
-
-    await loadWithdrawals();
-  }
-
-  document.getElementById("refreshProducts")
-    .addEventListener("click", loadListings);
-
-  document.getElementById("refreshWithdrawals")
-    .addEventListener("click", loadWithdrawals);
-
-  document.getElementById("logoutBtn")
-    .addEventListener("click", async () => {
-      const { error } = await supabaseClient.auth.signOut();
-
-      if (error) {
-        alert("Logout failed: " + error.message);
-        return;
-      }
-
-      window.location.href = "login.html";
-    });
-
-  checkAdmin();
-</script>
-
-</body>
-</html>
+    addText(
+      ordersContainer,
+      "p",
+     
