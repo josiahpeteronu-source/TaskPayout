@@ -243,7 +243,6 @@
 <body>
 
   <section class="hero">
-
     <div class="brand">
       <span class="brand-dot"></span>
       Business Shop
@@ -256,7 +255,6 @@
     </div>
 
     <div class="wave"></div>
-
   </section>
 
   <main class="auth-container">
@@ -286,7 +284,6 @@
         <label for="password">Password</label>
 
         <div class="input-wrap">
-
           <input
             type="password"
             id="password"
@@ -306,7 +303,6 @@
           >
             Show
           </button>
-
         </div>
       </div>
 
@@ -363,7 +359,6 @@
     }
 
     // SHOW OR HIDE PASSWORD
-
     togglePassword.addEventListener("click", function() {
       const show = passwordInput.type === "password";
 
@@ -379,8 +374,7 @@
       passwordInput.focus();
     });
 
-    // NORMAL LOGIN
-
+    // LOGIN AND CHECK ADMIN ACCESS
     loginForm.addEventListener("submit", async function(event) {
       event.preventDefault();
 
@@ -393,16 +387,52 @@
       loginButton.textContent = "Signing in...";
 
       try {
-        const { error } = await supabaseClient.auth.signInWithPassword({
-          email: email,
-          password: password
-        });
+        const { data: loginData, error: loginError } =
+          await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+          });
 
-        if (error) throw error;
+        if (loginError) throw loginError;
 
-        showMessage("Login successful! Opening your dashboard...", true);
+        const user = loginData.user;
 
-        window.location.href = "dashboard.html";
+        if (!user) {
+          throw new Error("Could not verify your account.");
+        }
+
+        loginButton.textContent = "Checking account type...";
+
+        // Check admin_users table
+        const { data: adminRecord, error: adminError } =
+          await supabaseClient
+            .from("admin_users")
+            .select("user_id")
+            .eq("user_id", user.id)
+            .maybeSingle();
+
+        if (adminError) {
+          throw new Error(
+            "Admin access check failed: " + adminError.message
+          );
+        }
+
+        if (adminRecord) {
+          showMessage(
+            "Admin login successful! Opening admin panel...",
+            true
+          );
+
+          window.location.replace("admin.html");
+
+        } else {
+          showMessage(
+            "Customer login successful! Opening your dashboard...",
+            true
+          );
+
+          window.location.replace("dashboard.html");
+        }
 
       } catch (error) {
         showMessage(error.message);
@@ -413,7 +443,6 @@
     });
 
     // FORGOT PASSWORD
-
     forgotPassword.addEventListener("click", async function(event) {
       event.preventDefault();
 
